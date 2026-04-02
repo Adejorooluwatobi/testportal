@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Admin — AWEDI</title>
+    <script>tailwind={config:{corePlugins:{preflight:false}}}</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div id="page-app" class="page active">
+        <div id="sb-overlay" onclick="closeMob()"></div>
+        <nav id="sidebar"></nav>
+        <div id="main">
+            <header id="header"></header>
+            <div id="content">
+                <div class="subpage active" id="sub-admin-signup">
+                    <div class="page-header"><div class="breadcrumb"><span>Admin</span><span class="breadcrumb-sep">›</span><span>Administration</span><span class="breadcrumb-sep">›</span><span>Add Admin</span></div><h2>Add New Admin</h2><p>Only registered admins can create new administrator accounts.</p></div>
+                    <div class="signup-gate">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;color:var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                      <div class="signup-gate-text"><h4>Restricted Action — Admin Only</h4><p>You are creating this account as an authorized admin. The new user will receive an invite email to set their own password.</p></div>
+                    </div>
+                    <div class="card card-pad">
+                      <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:17px;height:17px;color:var(--accent);"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>New Admin Details</div>
+                      <div class="form-grid">
+                        <div class="fg"><label class="fl">First Name</label><input class="fi" type="text" placeholder="e.g. Emeka"/></div>
+                        <div class="fg"><label class="fl">Last Name</label><input class="fi" type="text" placeholder="e.g. Okonkwo"/></div>
+                        <div class="fg"><label class="fl">Work Email</label><input class="fi" type="email" placeholder="emeka@hopeforward.org"/><p class="form-hint">Must be an official @hopeforward.org address.</p></div>
+                        <div class="fg"><label class="fl">Phone Number</label><input class="fi" type="tel" placeholder="+234 800 000 0000"/></div>
+                        <div class="fg"><label class="fl">Role / Title</label><select class="fs"><option value="">— Assign role —</option><option>Program Manager</option><option>Field Coordinator</option><option>Finance Officer</option><option>Communications Lead</option><option>Data Analyst</option><option>Admin Support</option><option>Program Director</option></select></div>
+                        <div class="fg"><label class="fl">Department</label><select class="fs"><option value="">— Select department —</option><option>Programs & Impact</option><option>Finance & Administration</option><option>Communications</option><option>Field Operations</option><option>Monitoring & Evaluation</option></select></div>
+                        <div class="fg"><label class="fl">Access Level</label><select class="fs"><option>Viewer — Read only</option><option>Editor — Create & Edit</option><option>Manager — Full program access</option><option>Super Admin — Full system access</option></select></div>
+                        <div class="fg"><label class="fl">Assigned Programs</label><select class="fs"><option>All Programs</option><option>Child Literacy Drive</option><option>Clean Water Initiative</option><option>Rural Health Outreach</option><option>Women Empowerment</option></select></div>
+                        <div class="fg full"><label class="fl">Additional Notes</label><textarea class="fta" rows="3" placeholder="Any notes about this admin's responsibilities or onboarding details…"></textarea></div>
+                      </div>
+                      <div style="background:rgba(45,106,79,.06);border:1px solid rgba(45,106,79,.2);border-radius:10px;padding:14px 16px;margin-top:16px;display:flex;gap:10px;align-items:flex-start;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <p style="font-size:12.5px;color:var(--muted);line-height:1.5;">An activation email will be sent to the provided address. The new admin must verify their email and set a password within 48 hours. This action will be logged in the audit trail.</p>
+                      </div>
+                      <div class="form-footer" style="margin-top:20px;"><button class="btn-ghost">Cancel</button><button class="btn-primary" onclick="toast('success','Invite Sent!','Admin invite email sent to emeka@hopeforward.org 🎉','👤')">Send Invite & Create Account</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('componentsLoaded', () => { fixGrids(); });
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Program — AWEDI</title>
+    <script>tailwind={config:{corePlugins:{preflight:false}}}</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div id="page-app" class="page active">
+        <div id="sb-overlay" onclick="closeMob()"></div>
+        <nav id="sidebar"></nav>
+        <div id="main">
+            <header id="header"></header>
+            <div id="content">
+                <div class="subpage active" id="sub-view-program">
+                    <div class="page-header"><div class="breadcrumb"><span>Admin</span><span class="breadcrumb-sep">›</span><span>Programs</span><span class="breadcrumb-sep">›</span><span>View</span></div><h2>Child Literacy Drive</h2><p style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">Lagos &amp; Abuja &nbsp;<span class="pill pill-active">Active</span></p></div>
+                    <div class="view-hero">
+                      <div class="view-hdr">
+                        <div>
+                          <div style="font-size:12px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Education Program · Cohort 4</div>
+                          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span class="pill pill-active">Active</span><span style="font-size:12.5px;color:var(--muted);">Started Jan 2025 · Ends Dec 2025</span></div>
+                          <div style="margin-top:12px;max-width:400px;"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px;"><span>Program Progress</span><span style="font-weight:700;color:var(--accent);">80%</span></div><div class="progress-bar-wrap" style="height:10px;"><div class="progress-bar" style="width:80%;"></div></div></div>
+                        </div>
+                        <div class="view-actions"><button class="btn-ol" onclick="toast('info','Edit Mode','Opening editor for this program.','✏️')">Edit</button><button class="btn-primary" onclick="toast('success','Generating...','Impact report is being generated. Ready in 30s.','📊')">Generate Report</button></div>
+                      </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;" id="view-program-grid">
+                      <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div class="card card-pad">
+                          <div style="font-family:'Lora',serif;font-size:14px;font-weight:700;margin-bottom:13px;">Program Details</div>
+                          <div class="info-grid">
+                            <div class="ii"><div class="il">Category</div><div class="iv">Education</div></div>
+                            <div class="ii"><div class="il">Lead Coordinator</div><div class="iv">Dr. Amina Yusuf</div></div>
+                            <div class="ii"><div class="il">Target Beneficiaries</div><div class="iv">600</div></div>
+                            <div class="ii"><div class="il">Enrolled So Far</div><div class="iv" style="color:var(--accent);font-weight:700;">482 (80%)</div></div>
+                            <div class="ii"><div class="il">Budget Allocated</div><div class="iv">₦4,200,000</div></div>
+                            <div class="ii"><div class="il">Budget Spent</div><div class="iv" style="color:var(--warn);">₦3,150,000 (75%)</div></div>
+                            <div class="ii"><div class="il">Locations</div><div class="iv">Lagos Island, Abuja Municipal</div></div>
+                            <div class="ii"><div class="il">Funding Source</div><div class="iv">International Donor + Internal</div></div>
+                          </div>
+                          <div style="margin-top:14px;"><div class="il" style="margin-bottom:6px;">Program Description</div><p style="font-size:13.5px;line-height:1.7;color:var(--muted);">This program targets out-of-school children aged 6–14 in underserved communities, providing structured literacy education, school materials, and teacher training to improve foundational reading and numeracy skills.</p></div>
+                        </div>
+                        <div class="card card-pad">
+                          <div style="font-family:'Lora',serif;font-size:14px;font-weight:700;margin-bottom:13px;">KPI Tracking</div>
+                          <div style="display:flex;flex-direction:column;gap:12px;">
+                            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="font-weight:500;">Children Enrolled</span><span style="font-weight:700;">482 / 600</span></div><div class="progress-bar-wrap"><div class="progress-bar" style="width:80%;"></div></div></div>
+                            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="font-weight:500;">Schools Rehabilitated</span><span style="font-weight:700;">18 / 20</span></div><div class="progress-bar-wrap"><div class="progress-bar" style="width:90%;"></div></div></div>
+                            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="font-weight:500;">Teachers Trained</span><span style="font-weight:700;">44 / 60</span></div><div class="progress-bar-wrap"><div class="progress-bar" style="width:73%;"></div></div></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:14px;">
+                        <div class="card card-pad">
+                          <div style="font-family:'Lora',serif;font-size:14px;font-weight:700;margin-bottom:12px;">Timeline</div>
+                          <div style="display:flex;flex-direction:column;gap:10px;">
+                            <div style="display:flex;gap:9px;"><div style="width:8px;height:8px;background:var(--accent);border-radius:50%;margin-top:5px;flex-shrink:0;"></div><div><div style="font-size:13px;font-weight:500;">Phase 3 field visit completed</div><div style="font-size:11px;color:var(--muted);">Mar 20, 2025</div></div></div>
+                            <div style="display:flex;gap:9px;"><div style="width:8px;height:8px;background:var(--gold);border-radius:50%;margin-top:5px;flex-shrink:0;"></div><div><div style="font-size:13px;font-weight:500;">Mid-year impact review</div><div style="font-size:11px;color:var(--muted);">Jun 15, 2025 (upcoming)</div></div></div>
+                            <div style="display:flex;gap:9px;"><div style="width:8px;height:8px;background:var(--muted);border-radius:50%;margin-top:5px;flex-shrink:0;"></div><div><div style="font-size:13px;font-weight:500;">Final assessment &amp; report</div><div style="font-size:11px;color:var(--muted);">Nov 30, 2025</div></div></div>
+                          </div>
+                        </div>
+                        <div class="card card-pad">
+                          <div style="font-family:'Lora',serif;font-size:14px;font-weight:700;margin-bottom:11px;">Quick Stats</div>
+                          <div style="display:flex;flex-direction:column;gap:9px;">
+                            <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted);">Days Remaining</span><span style="font-weight:700;color:var(--accent);">280</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted);">Budget Remaining</span><span style="font-weight:700;">₦1.05M</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted);">Volunteers Deployed</span><span style="font-weight:700;">38</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted);">Field Reports Filed</span><span style="font-weight:700;">12</span></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('componentsLoaded', () => { fixGrids(); });
+    </script>
+</body>
+</html>

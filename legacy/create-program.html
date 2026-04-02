@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Program — AWEDI</title>
+    <script>tailwind={config:{corePlugins:{preflight:false}}}</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div id="page-app" class="page active">
+        <div id="sb-overlay" onclick="closeMob()"></div>
+        <nav id="sidebar"></nav>
+        <div id="main">
+            <header id="header"></header>
+            <div id="content">
+                <div class="subpage active" id="sub-create-program">
+                    <div class="page-header"><div class="breadcrumb"><span>Admin</span><span class="breadcrumb-sep">›</span><span>Programs</span><span class="breadcrumb-sep">›</span><span>Create</span></div><h2>Create New Program</h2><p>Fill in the details to launch a new AWEDI initiative.</p></div>
+                    <div class="card card-pad" style="margin-bottom:18px;">
+                      <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:17px;height:17px;color:var(--accent);"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Program Information</div>
+                      <div class="form-grid">
+                        <div class="fg full"><label class="fl">Program Name</label><input class="fi" type="text" placeholder="e.g. Clean Water Initiative Phase 3"/></div>
+                        <div class="fg"><label class="fl">Category</label><select class="fs"><option value="">— Select category —</option><option>Education</option><option>Health</option><option>Empowerment</option><option>Livelihood</option><option>Environment</option><option>Emergency Relief</option></select></div>
+                        <div class="fg"><label class="fl">Lead Coordinator</label><input class="fi" type="text" placeholder="Staff member name"/></div>
+                        <div class="fg"><label class="fl">Target Beneficiaries</label><input class="fi" type="number" placeholder="e.g. 500"/></div>
+                        <div class="fg"><label class="fl">Budget Allocated (₦)</label><input class="fi" type="number" placeholder="e.g. 4500000"/></div>
+                        <div class="fg"><label class="fl">Start Date</label><input class="fi" type="date"/></div>
+                        <div class="fg"><label class="fl">End Date</label><input class="fi" type="date"/></div>
+                        <div class="fg"><label class="fl">Location(s)</label><input class="fi" type="text" placeholder="e.g. Lagos, Abuja, Kano"/></div>
+                        <div class="fg"><label class="fl">Funding Source</label><select class="fs"><option>Internal Reserve</option><option>Government Grant</option><option>Corporate Sponsor</option><option>International Donor</option><option>Mixed</option></select></div>
+                        <div class="fg"><label class="fl">Status</label><select class="fs"><option>Draft</option><option>Active</option><option>Pending Approval</option></select></div>
+                        <div class="fg full"><label class="fl">Program Description</label><textarea class="fta" rows="4" placeholder="Describe the program goals, target group, and expected outcomes…"></textarea></div>
+                        <div class="fg full"><label class="fl">Success Metrics / KPIs</label><textarea class="fta" rows="3" placeholder="e.g. 500 children enrolled, 20 schools rehabilitated…"></textarea></div>
+                      </div>
+                    </div>
+                    <div class="card card-pad" style="margin-bottom:18px;">
+                      <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:17px;height:17px;color:var(--accent);"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>Documents & Attachments</div>
+                      <div style="border:2px dashed var(--border);border-radius:11px;padding:26px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(45,106,79,.03)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
+                        <div style="font-size:28px;margin-bottom:8px;">📄</div>
+                        <div style="font-weight:600;font-size:14px;margin-bottom:3px;">Drop files here or click to upload</div>
+                        <div style="font-size:12px;color:var(--muted);">Proposal PDF, Budget sheet, MOU — Max 20MB each</div>
+                      </div>
+                    </div>
+                    <div class="form-footer"><button class="btn-ghost" onclick="nav('programs')">Cancel</button><button class="btn-ol" onclick="toast('info','Draft Saved','Program saved as draft successfully.','💾')">Save Draft</button><button class="btn-primary" onclick="toast('success','Submitted!','Program submitted for approval. You\'ll be notified shortly.','🎉')">Submit for Approval</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('componentsLoaded', () => { fixGrids(); });
+    </script>
+</body>
+</html>

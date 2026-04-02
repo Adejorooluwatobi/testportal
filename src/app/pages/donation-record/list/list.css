@@ -1,0 +1,14 @@
+.amount-pill {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+tr.unread {
+  background-color: var(--surface2);
+}
+
+tr.unread td:first-child {
+  border-left: 3px solid var(--accent);
+}

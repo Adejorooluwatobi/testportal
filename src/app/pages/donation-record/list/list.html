@@ -1,0 +1,71 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Donation Records</span>
+  </div>
+  <div class="flex justify-between items-center">
+    <h2>Donation Transactions</h2>
+    <div class="flex items-center gap-3">
+      <div class="text-xs text-muted">{{ records.length }} transactions found</div>
+      <button class="btn-ol btn-xs" (click)="fetchRecords()">Refresh</button>
+    </div>
+  </div>
+</div>
+
+<div class="card overflow-hidden">
+  <div class="table-container">
+    <table class="w-full">
+      <thead>
+        <tr>
+          <th>Sender</th>
+          <th>Amount</th>
+          <th>Program</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of records" [class.unread]="!record.isRead">
+          <td>
+            <div class="fw-bold text-dark">{{ record.firstname }} {{ record.lastname }}</div>
+            <div class="text-xs text-muted">{{ record.email }}</div>
+          </td>
+          <td>
+            <div class="amount-pill bg-accent/10 text-accent font-bold">₦{{ record.amount | number }}</div>
+          </td>
+          <td>
+            <span class="text-sm">{{ record.program || 'General Support' }}</span>
+          </td>
+          <td>
+            <span class="status-pill" [class.status-success]="record.status === 'success'" [class.status-pending]="record.status === 'pending'" [class.status-failed]="record.status === 'failed'">
+              {{ record.status }}
+            </span>
+          </td>
+          <td>
+            <div class="text-xs">{{ record.createdAt | date:'mediumDate' }}</div>
+            <div class="text-[10px] text-muted">{{ record.createdAt | date:'shortTime' }}</div>
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <button class="btn-icon" [routerLink]="['/donation-records', record._id]" title="View Details">
+                <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              </button>
+              <button class="btn-icon text-danger" (click)="deleteRecord(record._id!)" title="Delete">
+                <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="records.length === 0 && !isLoading">
+          <td colspan="6" class="text-center py-10 text-muted">No donation transactions found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="flex justify-center py-12">
+  <div class="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin"></div>
+</div>

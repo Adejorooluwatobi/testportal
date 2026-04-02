@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donations — AWEDI</title>
+    <script>tailwind={config:{corePlugins:{preflight:false}}}</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div id="page-app" class="page active">
+        <div id="sb-overlay" onclick="closeMob()"></div>
+        <nav id="sidebar"></nav>
+        <div id="main">
+            <header id="header"></header>
+            <div id="content">
+                <div class="subpage active" id="sub-donations">
+                    <div class="page-header"><div class="breadcrumb"><span>Admin</span><span class="breadcrumb-sep">›</span><span>Donations</span></div><h2>Donations & Funding</h2><p>Track all incoming donations and funding sources.</p></div>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;" id="don-stat-grid">
+                      <div class="stat-card c2" style="padding:16px 18px;"><div class="stat-val" style="font-size:22px;">₦18.4M</div><div class="stat-lbl">Total 2025</div><div class="stat-change up">↑ 8.7%</div></div>
+                      <div class="stat-card c1" style="padding:16px 18px;"><div class="stat-val" style="font-size:22px;">142</div><div class="stat-lbl">Total Donors</div><div class="stat-change up">↑ 12 new</div></div>
+                      <div class="stat-card c3" style="padding:16px 18px;"><div class="stat-val" style="font-size:22px;">₦1.2M</div><div class="stat-lbl">This Month</div><div class="stat-change neutral">On track</div></div>
+                    </div>
+                    <div class="toolbar">
+                      <div class="srch-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="srch-inp" type="text" placeholder="Search donations…"/></div>
+                      <button class="btn-ol">Filter by Date</button>
+                      <button class="btn-primary" onclick="toast('success','Donation Logged','New donation entry created successfully.','💰')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#fff;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Log Donation</button>
+                    </div>
+                    <div class="card" style="padding:0;overflow:hidden;">
+                      <div class="tbl-wrap">
+                        <table>
+                          <thead><tr><th>Donor</th><th>Amount</th><th>Type</th><th>Program</th><th>Date</th><th>Status</th></tr></thead>
+                          <tbody>
+                            <tr><td style="font-weight:600;">United Way Foundation</td><td style="font-weight:700;color:var(--accent);">₦500,000</td><td style="color:var(--muted);">Corporate</td><td>Child Literacy Drive</td><td style="color:var(--muted);font-size:12px;">Mar 22, 2025</td><td><span class="pill pill-active">Received</span></td></tr>
+                            <tr><td style="font-weight:600;">Lagos State Government</td><td style="font-weight:700;color:var(--accent);">₦3,000,000</td><td style="color:var(--muted);">Government</td><td>Clean Water Initiative</td><td style="color:var(--muted);font-size:12px;">Mar 15, 2025</td><td><span class="pill pill-active">Received</span></td></tr>
+                            <tr><td style="font-weight:600;">USAID Nigeria</td><td style="font-weight:700;color:var(--accent);">₦7,200,000</td><td style="color:var(--muted);">International</td><td>Rural Health Outreach</td><td style="color:var(--muted);font-size:12px;">Feb 28, 2025</td><td><span class="pill pill-active">Received</span></td></tr>
+                            <tr><td style="font-weight:600;">Anonymous Donor</td><td style="font-weight:700;color:var(--accent);">₦150,000</td><td style="color:var(--muted);">Individual</td><td>General Fund</td><td style="color:var(--muted);font-size:12px;">Feb 10, 2025</td><td><span class="pill pill-pending">Processing</span></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('componentsLoaded', () => { fixGrids(); });
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <span>Management</span>
+    <span class="breadcrumb-sep">/</span>
+    <a routerLink="/admin/list">Admins</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Details</span>
+  </div>
+  <div class="flex justify-between items-center">
+    <h2>Admin Account Details</h2>
+    <div class="flex gap-3">
+      <a routerLink="/admin/list" class="btn-ol btn-sm">Back to List</a>
+      <a [routerLink]="['/admin/edit', admin._id]" class="btn-primary btn-sm" *ngIf="admin">Edit Account</a>
+    </div>
+  </div>
+</div>
+
+<div class="grid gap-6">
+  <!-- Loading State -->
+  <div class="card p-12 text-center" *ngIf="isLoading">
+    <div class="spinner mb-4 mx-auto"></div>
+    <p class="text-muted">Fetching admin details...</p>
+  </div>
+
+  <!-- Admin Profile Card -->
+  <div class="card overflow-hidden" *ngIf="admin && !isLoading">
+    <div class="card-pad border-b border-border bg-surface2 flex items-center gap-6">
+      <div class="w-20 h-20 bg-accent rounded-2xl flex items-center justify-center text-3xl font-bold text-white shadow-lg">
+        {{ admin.username?.[0] || 'A' }}
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold mb-1">{{ admin.username }}</h3>
+        <div class="flex gap-2 items-center">
+          <span class="badge" [ngClass]="{
+            'badge-primary': admin.role === 'super_admin',
+            'badge-accent': admin.role === 'technical',
+            'badge-surface2': admin.role === 'operator'
+          }">{{ admin.role || 'Administrator' }}</span>
+          <span class="text-muted text-sm">•</span>
+          <span class="text-muted text-sm">ID: {{ admin._id }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-px bg-border">
+      <div class="bg-surface card-pad">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Username</label>
+        <p class="font-medium">{{ admin.username }}</p>
+      </div>
+      <div class="bg-surface card-pad">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Email Address</label>
+        <p class="font-medium">{{ admin.email }}</p>
+      </div>
+      <div class="bg-surface card-pad">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Account Role</label>
+        <p class="font-medium capitalize">{{ admin.role?.replace('_', ' ') || 'Standard Admin' }}</p>
+      </div>
+      <div class="bg-surface card-pad">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Account Status</label>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full" [ngClass]="admin.isActive !== false ? 'bg-green-500' : 'bg-red-500'"></div>
+          <p class="font-medium">{{ admin.isActive !== false ? 'Active' : 'Deactivated' }}</p>
+        </div>
+      </div>
+      <div class="bg-surface card-pad" *ngIf="admin.createdAt">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Member Since</label>
+        <p class="font-medium">{{ admin.createdAt | date:'longDate' }}</p>
+      </div>
+      <div class="bg-surface card-pad" *ngIf="admin.updatedAt">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Last Updated</label>
+        <p class="font-medium">{{ admin.updatedAt | date:'medium' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteers — AWEDI</title>
+    <script>tailwind={config:{corePlugins:{preflight:false}}}</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div id="page-app" class="page active">
+        <div id="sb-overlay" onclick="closeMob()"></div>
+        <nav id="sidebar"></nav>
+        <div id="main">
+            <header id="header"></header>
+            <div id="content">
+                <div class="subpage active" id="sub-volunteers">
+                    <div class="page-header"><div class="breadcrumb"><span>Admin</span><span class="breadcrumb-sep">›</span><span>Volunteers</span></div><h2>Volunteers</h2><p>Manage your volunteer network across all programs.</p></div>
+                    <div class="toolbar">
+                      <div class="srch-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="srch-inp" type="text" placeholder="Search volunteers…"/></div>
+                      <button class="btn-primary" onclick="toast('success','Form Opened','Add volunteer form is ready to fill.','❤️')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#fff;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Volunteer</button>
+                    </div>
+                    <div class="card" style="padding:0;overflow:hidden;">
+                      <div class="tbl-wrap">
+                        <table>
+                          <thead><tr><th>Name</th><th>Skills</th><th>Assigned Program</th><th>Hours Logged</th><th>Joined</th><th>Status</th></tr></thead>
+                          <tbody>
+                            <tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="t-av" style="background:#059669;">AO</div><div style="font-weight:600;">Ade Okafor</div></div></td><td style="color:var(--muted);font-size:13px;">Field Work, Teaching</td><td>Child Literacy Drive</td><td style="font-weight:600;color:var(--accent);">124 hrs</td><td style="color:var(--muted);font-size:12px;">Jan 2025</td><td><span class="pill pill-active">Active</span></td></tr>
+                            <tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="t-av" style="background:#d97706;">MN</div><div style="font-weight:600;">Mary Nwosu</div></div></td><td style="color:var(--muted);font-size:13px;">Medical, Outreach</td><td>Rural Health Outreach</td><td style="font-weight:600;color:var(--accent);">88 hrs</td><td style="color:var(--muted);font-size:12px;">Feb 2025</td><td><span class="pill pill-active">Active</span></td></tr>
+                            <tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="t-av" style="background:#7c3aed;">IB</div><div style="font-weight:600;">Ibrahim Baba</div></div></td><td style="color:var(--muted);font-size:13px;">Engineering, Water</td><td>Clean Water Initiative</td><td style="font-weight:600;color:var(--accent);">210 hrs</td><td style="color:var(--muted);font-size:12px;">Dec 2024</td><td><span class="pill pill-active">Active</span></td></tr>
+                            <tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="t-av" style="background:#0891b2;">CF</div><div style="font-weight:600;">Chinwe Femi</div></div></td><td style="color:var(--muted);font-size:13px;">Counselling, Women</td><td>Women Empowerment</td><td style="font-weight:600;color:var(--accent);">56 hrs</td><td style="color:var(--muted);font-size:12px;">Mar 2025</td><td><span class="pill pill-new">New</span></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('componentsLoaded', () => { fixGrids(); });
+    </script>
+</body>
+</html>

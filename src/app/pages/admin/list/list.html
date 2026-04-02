@@ -1,0 +1,69 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <span>Management</span>
+    <span class="breadcrumb-sep">/</span>
+    <span>System Administrators</span>
+  </div>
+  <h2>Administrator Management</h2>
+  <p>Manage administrative accounts and their access roles.</p>
+</div>
+
+<div class="card overflow-hidden">
+  <div class="card-pad border-b border-border flex justify-between items-center">
+    <div>
+      <h3 class="card-title">All Admins</h3>
+      <p class="card-sub">Total: {{ admins.length }} members</p>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn-ol btn-sm" (click)="fetchAdmins()">Refresh</button>
+      <a routerLink="/admin/create" class="btn-primary btn-sm">+ New Admin</a>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>User Name</th>
+          <th>Email Address</th>
+          <th>Role</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let admin of admins">
+          <td>
+            <div class="flex items-center">
+              <div class="avatar-sm mr-3">{{ admin.username?.[0] || 'A' }}</div>
+              <span class="font-medium">{{ admin.username }}</span>
+            </div>
+          </td>
+          <td>{{ admin.email }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-primary': admin.role === 'super_admin',
+              'badge-accent': admin.role === 'technical',
+              'badge-surface2': admin.role === 'operator'
+            }">{{ admin.role || 'admin' }}</span>
+          </td>
+          <td class="text-right">
+            <div class="flex justify-end gap-2">
+              <a [routerLink]="['/admin/view', admin._id]" class="btn-icon" title="View Details">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </a>
+              <a [routerLink]="['/admin/edit', admin._id]" class="btn-icon" title="Edit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </a>
+              <button class="btn-icon text-red-500" (click)="deleteAdmin(admin._id!)" title="Delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="admins.length === 0 && !isLoading">
+          <td colspan="4" class="text-center py-10 text-muted">No administrators found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

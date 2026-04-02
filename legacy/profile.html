@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile — AWEDI</title>
+    <script>tailwind={config:{corePlugins:{preflight:false}}}</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div id="page-app" class="page active">
+        <div id="sb-overlay" onclick="closeMob()"></div>
+        <nav id="sidebar"></nav>
+        <div id="main">
+            <header id="header"></header>
+            <div id="content">
+                <div class="subpage active" id="sub-profile">
+                    <div class="page-header"><div class="breadcrumb"><span>Admin</span><span class="breadcrumb-sep">›</span><span>Profile</span></div><h2>My Profile</h2></div>
+                    <div class="profile-banner">
+                      <div class="prof-av-lg">SA</div>
+                      <div class="prof-info-text">
+                        <h2>Sarah Adeyemi</h2>
+                        <p style="color:rgba(255,255,255,.75);font-size:13px;margin:4px 0 10px;">sarah.adeyemi@hopeforward.org</p>
+                        <span class="prof-role-tag">Program Director</span>
+                        <div style="display:flex;gap:9px;margin-top:14px;flex-wrap:wrap;">
+                          <button class="btn-primary" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);" onclick="toast('info','Edit Mode','Profile editor is now active.','✏️')">Edit Profile</button>
+                          <button class="btn-primary" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);" onclick="toast('info','Security','Password change email sent.','🔒')">Change Password</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;" id="prof-stat-row">
+                      <div class="stat-card c1" style="padding:16px 18px;"><div class="stat-val" style="font-size:20px;">8</div><div class="stat-lbl">Programs Managed</div></div>
+                      <div class="stat-card c2" style="padding:16px 18px;"><div class="stat-val" style="font-size:20px;">3.2yrs</div><div class="stat-lbl">Tenure at AWEDI</div></div>
+                      <div class="stat-card c3" style="padding:16px 18px;"><div class="stat-val" style="font-size:20px;">124</div><div class="stat-lbl">Reports Filed</div></div>
+                    </div>
+                    <div class="card card-pad">
+                      <div style="font-family:'Lora',serif;font-size:14px;font-weight:700;margin-bottom:14px;">Account Information</div>
+                      <div class="info-grid">
+                        <div class="ii"><div class="il">Full Name</div><div class="iv">Sarah Adeyemi</div></div>
+                        <div class="ii"><div class="il">Email</div><div class="iv">sarah.adeyemi@hopeforward.org</div></div>
+                        <div class="ii"><div class="il">Role</div><div class="iv">Program Director</div></div>
+                        <div class="ii"><div class="il">Department</div><div class="iv">Programs & Impact</div></div>
+                        <div class="ii"><div class="il">Phone</div><div class="iv">+234 801 234 5678</div></div>
+                        <div class="ii"><div class="il">Location</div><div class="iv">Lagos, Nigeria</div></div>
+                        <div class="ii"><div class="il">Joined</div><div class="iv">January 2022</div></div>
+                        <div class="ii"><div class="il">Last Login</div><div class="iv">Today, 08:47 AM</div></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('componentsLoaded', () => { fixGrids(); });
+    </script>
+</body>
+</html>

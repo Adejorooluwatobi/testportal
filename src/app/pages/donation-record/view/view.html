@@ -1,0 +1,83 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a>
+    <span class="breadcrumb-sep">/</span>
+    <a routerLink="/donation-records">Donation Records</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Transaction #{{ record?._id?.slice(-6) }}</span>
+  </div>
+  <div class="flex justify-between items-center">
+    <div class="flex items-center gap-4">
+      <button class="btn-icon" routerLink="/donation-records">
+        <svg viewBox="0 0 24 24" class="w-5 h-5"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <h2>Transaction Details</h2>
+    </div>
+    <button class="btn-ol text-danger" (click)="deleteRecord()">Delete Record</button>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6" *ngIf="record">
+  <div class="lg:col-span-2 space-y-6">
+    <div class="card card-pad">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        Transaction Information
+      </div>
+      
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>Donor Name</label>
+          <div class="val font-bold text-lg">{{ record.firstname }} {{ record.lastname }}</div>
+        </div>
+        <div class="detail-item">
+          <label>Email Address</label>
+          <div class="val">{{ record.email }}</div>
+        </div>
+        <div class="detail-item">
+          <label>Donation Amount</label>
+          <div class="val text-accent font-bold text-2xl">₦{{ record.amount | number }}</div>
+        </div>
+        <div class="detail-item">
+          <label>Target Program</label>
+          <div class="val">{{ record.program || 'General Support' }}</div>
+        </div>
+        <div class="detail-item full mt-4">
+          <label>Message from Donor</label>
+          <div class="val italic bg-surface p-4 rounded-xl border border-border/50">
+            "{{ record.message || 'No message provided' }}"
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lg:col-span-1 space-y-6">
+    <div class="card card-pad">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        Status & Meta
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="text-[10px] uppercase font-bold text-muted mb-1 block">Payment Status</label>
+          <div class="status-pill w-full text-center py-2" [class.status-success]="record.status === 'success'" [class.status-pending]="record.status === 'pending'" [class.status-failed]="record.status === 'failed'">
+            {{ record.status | uppercase }}
+          </div>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase font-bold text-muted mb-1 block">Transaction Date</label>
+          <div class="text-sm font-medium">{{ record.createdAt | date:'fullDate' }}</div>
+          <div class="text-xs text-muted">{{ record.createdAt | date:'shortTime' }}</div>
+        </div>
+        <div class="pt-4 border-t border-border/50">
+          <a [href]="'mailto:' + record.email" class="btn-primary w-full text-center">Reply via Email</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="flex justify-center py-12">
+  <div class="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin"></div>
+</div>

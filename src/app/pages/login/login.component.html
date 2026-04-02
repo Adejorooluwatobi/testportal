@@ -1,0 +1,45 @@
+<div id="page-signin" class="page active">
+  <div class="signin-wrap">
+    <div class="signin-card">
+      <div class="org-logo">
+        <img src="assets/img/logo.png" alt="Logo" style="width:100%; height:100%; object-fit:contain; border-radius:14px;"/>
+      </div>
+      <div class="org-name">AWEDI</div>
+      <div class="org-tag">NGO Admin Management Portal</div>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="doSignIn()">
+        <div class="si-group">
+          <label class="si-label">Email Address</label>
+          <input class="si-input" type="email" formControlName="email" placeholder="admin@hopeforward.org"/>
+          <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']" style="color:var(--danger);font-size:11px;margin-top:4px;">
+            Please enter a valid email address.
+          </div>
+        </div>
+        
+        <div class="si-group">
+          <label class="si-label">Password</label>
+          <input class="si-input" type="password" formControlName="password" placeholder="••••••••"/>
+        </div>
+
+        <div *ngIf="error" style="color:var(--danger);background:rgba(192,57,43,0.1);padding:10px;border-radius:8px;font-size:12px;margin-bottom:15px;text-align:center;">
+          {{ error }}
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:13px;">
+          <label style="display:flex;align-items:center;gap:7px;cursor:pointer;color:var(--muted);">
+            <input type="checkbox" checked style="accent-color:var(--accent);"/>Remember me
+          </label>
+          <span style="color:var(--accent);cursor:pointer;font-weight:600;">Forgot password?</span>
+        </div>
+
+        <button type="submit" class="btn-signin" [disabled]="loginForm.invalid || isLoading">
+          {{ isLoading ? 'Signing In...' : 'Sign In to Portal' }}
+        </button>
+      </form>
+
+      <p style="text-align:center;margin-top:18px;font-size:12px;color:var(--muted);">
+        AWEDI NGO &nbsp;·&nbsp; Secure Admin Access &nbsp;·&nbsp; SSL Encrypted
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,228 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Donation Page</span>
+  </div>
+  <div class="flex justify-between items-center">
+    <h2>Donation Management</h2>
+    <div class="flex gap-2" *ngIf="editingSection">
+      <button (click)="toggleEditSection(null)" class="btn-ol">Back to Overview</button>
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- LEFT COL: Banner & Choose -->
+    <div class="lg:col-span-1 space-y-6">
+      <!-- BANNER SECTION -->
+      <div class="card card-pad" formGroupName="banner" *ngIf="!editingSection || editingSection === 'banner'">
+        <div class="section-title justify-between">
+          <div class="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            Banner Settings
+          </div>
+          <div class="flex gap-1">
+            <button type="button" *ngIf="!editingSection" (click)="toggleEditSection('banner')" class="btn-ol btn-xs">Edit</button>
+            <button type="button" *ngIf="editingSection === 'banner'" (click)="toggleEditSection(null)" class="btn-ol btn-xs">Cancel</button>
+            <button type="button" *ngIf="editingSection === 'banner'" (click)="onSubmit()" class="btn-primary btn-xs">Save</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="fg full">
+            <label class="fl">Header</label>
+            <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'banner'">
+          </div>
+          <div class="fg full">
+            <label class="fl">Title</label>
+            <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'banner'">
+          </div>
+          <div class="fg full">
+            <label class="fl">Description</label>
+            <textarea class="fta h-20" formControlName="description" [readonly]="editingSection !== 'banner'"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHOOSE SECTION -->
+      <div class="card card-pad" formGroupName="choose" *ngIf="!editingSection || editingSection === 'choose'">
+        <div class="section-title justify-between">
+          <div class="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.22 1.21 4.15 3 5.19l1-1.74c-1.19-.7-2-1.97-2-3.45 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.48-.81 2.75-2 3.45l1 1.74c1.79-1.04 3-2.97 3-5.19z"/></svg>
+            Suggested Amounts
+          </div>
+          <div class="flex gap-1">
+            <button type="button" *ngIf="editingSection === 'choose'" (click)='addAmount()' class="btn-ol btn-xs">+ Add</button>
+            <button type="button" *ngIf="!editingSection" (click)="toggleEditSection('choose')" class="btn-ol btn-xs">Edit</button>
+            <button type="button" *ngIf="editingSection === 'choose'" (click)="toggleEditSection(null)" class="btn-ol btn-xs">Cancel</button>
+            <button type="button" *ngIf="editingSection === 'choose'" (click)="onSubmit()" class="btn-primary btn-xs">Save</button>
+          </div>
+        </div>
+        <div formArrayName="suggestedAmounts" class="grid grid-cols-2 gap-2 mb-6">
+          <div *ngFor="let control of suggestedAmounts.controls; let i=index" class="flex gap-1">
+            <input type="number" class="fi text-sm" [formControlName]="i" [readonly]="editingSection !== 'choose'">
+            <button type="button" *ngIf="editingSection === 'choose'" (click)="removeAmount(i)" class="text-danger">×</button>
+          </div>
+        </div>
+
+        <div class="section-title justify-between pt-4 border-t border-border/50">
+          <div class="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            Donation Programs
+          </div>
+          <button type="button" *ngIf="editingSection === 'choose'" (click)="addProgram()" class="btn-ol btn-xs">+ Add</button>
+        </div>
+        <div formArrayName="programs" class="space-y-2">
+          <div *ngFor="let control of programs.controls; let i=index" class="flex gap-2">
+            <input type="text" class="fi text-sm" [formControlName]="i" [readonly]="editingSection !== 'choose'">
+            <button type="button" *ngIf="editingSection === 'choose'" (click)="removeProgram(i)" class="text-danger">×</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADDITION SECTION -->
+      <div class="card card-pad" *ngIf="!editingSection || editingSection === 'addition'">
+        <div class="section-title justify-between">
+          <div class="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            Additional Options
+          </div>
+          <div class="flex gap-1">
+            <button type="button" *ngIf="editingSection === 'addition'" (click)="addAddition()" class="btn-ol btn-xs">+ Add</button>
+            <button type="button" *ngIf="!editingSection" (click)="toggleEditSection('addition')" class="btn-ol btn-xs">Edit</button>
+            <button type="button" *ngIf="editingSection === 'addition'" (click)="toggleEditSection(null)" class="btn-ol btn-xs">Cancel</button>
+            <button type="button" *ngIf="editingSection === 'addition'" (click)="onSubmit()" class="btn-primary btn-xs">Save</button>
+          </div>
+        </div>
+        <div formArrayName="addition" class="space-y-4">
+          <div *ngFor="let control of addition.controls; let i=index" [formGroupName]="i" class="bg-surface2 p-3 rounded-lg border border-border/50 relative">
+            <button type="button" *ngIf="editingSection === 'addition'" (click)="removeAddition(i)" class="absolute top-1 right-1 text-danger opacity-50 hover:opacity-100 text-sm">×</button>
+            <div class="fg mb-2">
+              <label class="fl text-[10px]">Header</label>
+              <input type="text" class="fi text-xs" formControlName="header" [readonly]="editingSection !== 'addition'">
+            </div>
+            <div class="fg">
+              <label class="fl text-[10px]">Description</label>
+              <textarea class="fi text-xs h-12 py-1 min-h-0" formControlName="description" [readonly]="editingSection !== 'addition'"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COL: Impact Cards & Bank Details -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- IMPACT CARDS -->
+      <div class="card card-pad" *ngIf="!editingSection || editingSection === 'impact'">
+        <div class="section-title justify-between">
+          <div class="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            Impact Cards
+          </div>
+          <div class="flex gap-1">
+            <button type="button" *ngIf="editingSection === 'impact'" (click)="addCard()" class="btn-ol btn-xs">+ Add Card</button>
+            <button type="button" *ngIf="!editingSection" (click)="toggleEditSection('impact')" class="btn-ol btn-xs">Edit</button>
+            <button type="button" *ngIf="editingSection === 'impact'" (click)="toggleEditSection(null)" class="btn-ol btn-xs">Cancel</button>
+            <button type="button" *ngIf="editingSection === 'impact'" (click)="onSubmit()" class="btn-primary btn-xs">Save</button>
+          </div>
+        </div>
+        <div formArrayName="card" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div *ngFor="let cGroup of card.controls; let i=index" [formGroupName]="i" class="card p-4 border border-border/50 relative">
+            <button type="button" *ngIf="editingSection === 'impact'" (click)="removeCard(i)" class="absolute top-2 right-2 text-danger opacity-50 hover:opacity-100">×</button>
+            <div class="fg mb-3">
+              <label class="fl text-[10px]">Header</label>
+              <input type="text" class="fi text-xs" formControlName="header" [readonly]="editingSection !== 'impact'">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 mb-3">
+              <div class="fg">
+                <label class="fl text-[10px]">Annual Goal (₦)</label>
+                <input type="number" class="fi text-xs" formControlName="annualGoal" [readonly]="editingSection !== 'impact'" (input)="onAmountChange(i)">
+              </div>
+              <div class="fg">
+                <label class="fl text-[10px]">Amount Raised (₦)</label>
+                <input type="number" class="fi text-xs font-bold text-accent" formControlName="amountRaised" [readonly]="editingSection !== 'impact'" (input)="onAmountChange(i)">
+              </div>
+            </div>
+
+            <div class="fg mb-4">
+              <label class="fl text-[10px] flex justify-between">
+                <span>Progress</span>
+                <span class="font-bold text-accent">{{ cGroup.get('progress')?.value }}%</span>
+              </label>
+              <input type="range" class="w-full h-2 accent-[var(--accent)] cursor-pointer mt-2" formControlName="progress" min="0" max="100" *ngIf="editingSection === 'impact'" (input)="onProgressChange(i)">
+              <div class="progress-bar-wrap h-2 mt-2 bg-surface hidden" [ngClass]="{'!block': editingSection !== 'impact'}">
+                <div class="progress-bar" [style.width.%]="cGroup.get('progress')?.value"></div>
+              </div>
+            </div>
+
+            <div class="fg">
+              <label class="fl text-[10px] flex justify-between font-bold border-b border-border/30 pb-1 mb-2">
+                METRICS (Cards)
+                <button type="button" *ngIf="editingSection === 'impact'" (click)="addCardItem(i)" class="text-accent hover:underline">+ Add</button>
+              </label>
+              <div formArrayName="items" class="grid grid-cols-2 gap-2">
+                <div *ngFor="let item of getCardItems(i).controls; let j=index" [formGroupName]="j" class="bg-surface p-2 rounded border border-border/30 relative">
+                  <button type="button" *ngIf="editingSection === 'impact'" (click)="removeCardItem(i, j)" class="absolute -top-1 -right-1 text-danger text-[10px] bg-white rounded-full w-4 h-4 flex items-center justify-center border border-border shadow-sm">×</button>
+                  <input type="text" class="fi text-center font-bold text-xs p-1 mb-1 border-none bg-transparent" formControlName="figure" placeholder="Figure" [readonly]="editingSection !== 'impact'">
+                  <input type="text" class="fi text-center text-[9px] p-0 border-none bg-transparent text-muted" formControlName="details" placeholder="Details" [readonly]="editingSection !== 'impact'">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BANK DETAILS -->
+      <div class="card card-pad" *ngIf="!editingSection || editingSection === 'bank'">
+        <div class="section-title justify-between">
+          <div class="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M4 10h3v7H4zM10.5 10h3v7h-3zM2 19h20v3H2zM17 10h3v7h-3zM12 1L2 6v2h20V6z"/></svg>
+            Bank Accounts
+          </div>
+          <div class="flex gap-1">
+            <button type="button" *ngIf="editingSection === 'bank'" (click)="addDetail()" class="btn-ol btn-xs">+ Add Account</button>
+            <button type="button" *ngIf="!editingSection" (click)="toggleEditSection('bank')" class="btn-ol btn-xs">Edit</button>
+            <button type="button" *ngIf="editingSection === 'bank'" (click)="toggleEditSection(null)" class="btn-ol btn-xs">Cancel</button>
+            <button type="button" *ngIf="editingSection === 'bank'" (click)="onSubmit()" class="btn-primary btn-xs">Save</button>
+          </div>
+        </div>
+        <div formArrayName="details" class="space-y-4">
+          <div *ngFor="let dGroup of details.controls; let i=index" [formGroupName]="i" class="bg-surface2 p-4 rounded-xl border border-border/50 relative">
+            <button type="button" *ngIf="editingSection === 'bank'" (click)="removeDetail(i)" class="absolute top-2 right-2 text-danger">×</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="fg">
+                <label class="fl text-[10px]">Header</label>
+                <input type="text" class="fi text-xs" formControlName="header" [readonly]="editingSection !== 'bank'">
+              </div>
+              <div class="fg">
+                <label class="fl text-[10px]">Bank Name</label>
+                <input type="text" class="fi text-xs" formControlName="bank" [readonly]="editingSection !== 'bank'">
+              </div>
+              <div class="fg">
+                <label class="fl text-[10px]">Account Name</label>
+                <input type="text" class="fi text-xs" formControlName="accountname" [readonly]="editingSection !== 'bank'">
+              </div>
+              <div class="fg">
+                <label class="fl text-[10px]">Account Number</label>
+                <input type="text" class="fi text-xs" formControlName="accountno" [readonly]="editingSection !== 'bank'">
+              </div>
+              <div class="fg full">
+                <label class="fl text-[10px]">Transfer Instructions</label>
+                <textarea class="fta text-xs h-16 min-h-0" formControlName="text" [readonly]="editingSection !== 'bank'"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div *ngIf="isLoading" class="fixed inset-0 bg-surface/50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div class="text-center">
+    <div class="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+    <p class="text-sm font-bold text-accent">Updating Content...</p>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <a routerLink="/admin/list">Admins</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Create New</span>
+  </div>
+  <h2>Add Administrator</h2>
+  <p>Create a new administrative account with specific roles.</p>
+</div>
+
+<div class="card max-w-2xl">
+  <div class="card-pad border-b border-border">
+    <h3 class="card-title">Admin Account Details</h3>
+  </div>
+  <form [formGroup]="adminForm" (ngSubmit)="onSubmit()" class="card-pad">
+    <div class="form-grid">
+      <div class="fg full">
+        <label class="fl">Username</label>
+        <input type="text" class="fi" formControlName="username" placeholder="e.g. johndoe">
+      </div>
+      <div class="fg full">
+        <label class="fl">Email Address</label>
+        <input type="email" class="fi" formControlName="email" placeholder="email@example.com">
+      </div>
+      <div class="fg full">
+        <label class="fl">Initial Password</label>
+        <input type="password" class="fi" formControlName="password">
+      </div>
+      <div class="fg full">
+        <label class="fl">Access Role</label>
+        <select class="fi" formControlName="role">
+          <option value="super_admin">Super Admin (Full Access)</option>
+          <option value="technical">Technical (System settings)</option>
+          <option value="operator">Operator (Content Management)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3 mt-8">
+      <a routerLink="/admin/list" class="btn-ol">Cancel</a>
+      <button type="submit" class="btn-primary" [disabled]="adminForm.invalid || isLoading">
+        {{ isLoading ? 'Creating...' : 'Create Admin' }}
+      </button>
+    </div>
+  </form>
+</div>

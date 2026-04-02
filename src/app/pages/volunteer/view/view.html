@@ -1,0 +1,144 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <span>Content Management</span>
+    <span class="breadcrumb-sep">/</span>
+    <span>Volunteer Page</span>
+  </div>
+  <h2>Volunteer Support Page</h2>
+  <p>Manage the banner and cards that encourage people to join as volunteers.</p>
+</div>
+
+<div class="view-hero" *ngIf="!isLoading">
+  <div class="view-hdr">
+    <div>
+      <h3 class="card-title">{{ editingSection ? 'Editing ' + (editingSection | titlecase) : 'Current Content' }}</h3>
+      <p class="card-sub">{{ editingSection ? 'Update the section below.' : 'Update the hero banner and motivational cards.' }}</p>
+    </div>
+    <div class="view-actions" *ngIf="editingSection">
+      <button class="btn-ol" (click)="toggleEditSection(null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 mr-1">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        Back to Overview
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="skeleton-wrap">
+  <div class="card skeleton h-48"></div>
+</div>
+
+<div *ngIf="!isLoading && !volunteerData && !isEditMode" class="card empty-state p-12 text-center">
+  <div class="empty-icon mb-4">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 48px; height: 48px; opacity: 0.3;">
+       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </div>
+  <h3>No Volunteer Page Content Yet</h3>
+  <p class="text-muted">Click an "Edit" button on any section to start setting up the volunteer page.</p>
+</div>
+
+<form [formGroup]="volunteerForm" *ngIf="!isLoading && (volunteerData || isEditMode)">
+  <!-- BANNER -->
+  <div class="card mb-6" formGroupName="banner" *ngIf="!editingSection || editingSection === 'banner'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+          Hero Banner
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('banner')">Edit Banner</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'banner'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'banner'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label class="fl">Header Tag</label>
+          <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'banner'">
+        </div>
+        <div class="fg">
+          <label class="fl">Main Title</label>
+          <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'banner'">
+        </div>
+        <div class="fg full">
+          <label class="fl">Description</label>
+          <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'banner'"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECONDARY HEADER -->
+  <div class="card mb-6" *ngIf="!editingSection || editingSection === 'intro'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+          Section Introduction
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('intro')">Edit Intro</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'intro'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'intro'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label class="fl">Section Header</label>
+          <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'intro'">
+        </div>
+        <div class="fg">
+          <label class="fl">Section Title</label>
+          <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'intro'">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="card" *ngIf="!editingSection || editingSection === 'cards'">
+    <div class="card-pad">
+      <div class="flex justify-between items-center mb-4">
+        <div class="section-title mb-0 flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+          Feature Cards
+        </div>
+        <div class="flex gap-2">
+          <button class="btn-ol btn-sm" *ngIf="editingSection === 'cards'" (click)="addCard()">+ Add Card</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('cards')">Edit Cards</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'cards'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'cards'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" formArrayName="card">
+        <div *ngFor="let card of volunteerCards.controls; let i=index" [formGroupName]="i" class="ii relative p-4">
+          <button class="absolute top-2 right-2 text-red-500" *ngIf="editingSection === 'cards'" (click)="removeCard(i)">×</button>
+          <div class="fg mb-2">
+            <label class="fl text-xs">Icon</label>
+            <div class="flex items-center gap-2 mt-1">
+              <div class="h-10 w-10 bg-surface2 rounded flex items-center justify-center border overflow-hidden">
+                <img [src]="card.get('icon')?.value" *ngIf="card.get('icon')?.value" class="max-h-full max-w-full">
+                <span *ngIf="!card.get('icon')?.value" class="text-[10px] opacity-30">None</span>
+              </div>
+              <div *ngIf="editingSection === 'cards'">
+                <input type="file" #volunteerIconInput style="display: none" (change)="onFileSelected($event, 'card.' + i + '.icon')" accept="image/*">
+                <button type="button" class="btn-ol btn-xs" (click)="volunteerIconInput.click()">Upload</button>
+              </div>
+            </div>
+          </div>
+          <div class="fg mb-2">
+            <label class="fl text-xs">Title</label>
+            <input type="text" class="fi text-sm" formControlName="title" [readonly]="editingSection !== 'cards'">
+          </div>
+          <div class="fg">
+            <label class="fl text-xs">Description</label>
+            <textarea class="fta text-sm h-24" formControlName="description" [readonly]="editingSection !== 'cards'"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

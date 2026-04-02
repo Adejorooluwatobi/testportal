@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports — AWEDI</title>
+    <script>tailwind={config:{corePlugins:{preflight:false}}}</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div id="page-app" class="page active">
+        <div id="sb-overlay" onclick="closeMob()"></div>
+        <nav id="sidebar"></nav>
+        <div id="main">
+            <header id="header"></header>
+            <div id="content">
+                <div class="subpage active" id="sub-reports">
+                    <div class="page-header"><div class="breadcrumb"><span>Admin</span><span class="breadcrumb-sep">›</span><span>Reports</span></div><h2>Reports & Analytics</h2><p>Download and generate impact reports for AWEDI programs.</p></div>
+                    <div class="card card-pad" style="margin-bottom:20px;">
+                      <div class="card-title" style="margin-bottom:14px;">Program Performance Overview</div>
+                      <div style="height:300px;"><canvas id="reportChart"></canvas></div>
+                    </div>
+                    <div class="reports-grid">
+                      <div class="report-card" onclick="toast('info','Downloading...','Q1 2025 Impact Report is being prepared.','📄')"><div class="rep-ico green"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="width:20px;height:20px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="rep-title">Q1 2025 Impact Report</div><div class="rep-sub">Generated Mar 31, 2025 · PDF</div></div><div class="rep-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div>
+                      <div class="report-card" onclick="toast('info','Downloading...','Annual Fundraising Report is being prepared.','📊')"><div class="rep-ico blue"><svg viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2" style="width:20px;height:20px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div><div class="rep-title">Annual Fundraising Report</div><div class="rep-sub">Generated Jan 5, 2025 · Excel</div></div><div class="rep-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div>
+                      <div class="report-card" onclick="toast('info','Downloading...','Beneficiary Census 2025 is being prepared.','👥')"><div class="rep-ico gold"><svg viewBox="0 0 24 24" fill="none" stroke="#96700a" stroke-width="2" style="width:20px;height:20px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="rep-title">Beneficiary Census 2025</div><div class="rep-sub">Updated Mar 15, 2025 · PDF</div></div><div class="rep-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div>
+                      <div class="report-card" onclick="toast('warn','Large File','Budget report is 8.2MB. Continue download?','💰')"><div class="rep-ico red"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" style="width:20px;height:20px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div class="rep-title">Budget & Expenditure</div><div class="rep-sub">Updated Mar 20, 2025 · Excel</div></div><div class="rep-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('componentsLoaded', () => { initReportChart(); fixGrids(); });
+    </script>
+</body>
+</html>

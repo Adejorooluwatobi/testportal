@@ -1,0 +1,112 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <span>Management</span>
+    <span class="breadcrumb-sep">/</span>
+    <a routerLink="/user/list">Users</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>View Profile</span>
+  </div>
+  <div class="flex justify-between items-center">
+    <h2>User Profile Details</h2>
+    <div class="flex gap-3">
+      <a routerLink="/user/list" class="btn-ol btn-sm">Back to List</a>
+    </div>
+  </div>
+</div>
+
+<div class="grid gap-6">
+  <!-- Loading State -->
+  <div class="card p-12 text-center" *ngIf="isLoading">
+    <div class="spinner mb-4 mx-auto"></div>
+    <p class="text-muted">Fetching user profile...</p>
+  </div>
+
+  <!-- User Profile Card -->
+  <div class="card overflow-hidden" *ngIf="user && !isLoading">
+    <div class="card-pad border-b border-border bg-gradient-to-r from-surface2 to-surface flex items-center gap-6">
+      <div class="w-20 h-20 bg-gold rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-lg border-4 border-surface">
+        {{ user.username?.[0] || 'U' }}
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold mb-1">{{ user.username }}</h3>
+        <div class="flex gap-2 items-center">
+          <span class="badge badge-accent">Community Member</span>
+          <span class="text-muted text-sm">•</span>
+          <span class="text-muted text-sm">ID: {{ user._id }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-px bg-border">
+      <div class="bg-surface card-pad">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Username</label>
+        <p class="font-medium">{{ user.username }}</p>
+      </div>
+      <div class="bg-surface card-pad">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Email Address</label>
+        <p class="font-medium">{{ user.email }}</p>
+      </div>
+      <div class="bg-surface card-pad">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Account Priority</label>
+        <p class="font-medium text-gold font-bold">VIP Member</p>
+      </div>
+      <div class="bg-surface card-pad">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Account Status</label>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full" [ngClass]="user.isActive !== false ? 'bg-green-500' : 'bg-red-500'"></div>
+          <p class="font-medium">{{ user.isActive !== false ? 'Active' : 'Deactivated' }}</p>
+        </div>
+      </div>
+      <div class="bg-surface card-pad" *ngIf="user.createdAt">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Joined Date</label>
+        <p class="font-medium">{{ user.createdAt | date:'longDate' }}</p>
+      </div>
+      <div class="bg-surface card-pad" *ngIf="user.updatedAt">
+        <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Last Active</label>
+        <p class="font-medium">{{ user.updatedAt | date:'medium' }}</p>
+      </div>
+    </div>
+
+    <!-- Personal Profile Section -->
+    <div class="card-pad border-t border-border bg-surface2">
+      <h4 class="font-bold text-accent mb-3 flex items-center gap-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        Personal Profile Information
+      </h4>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Phone Number</label>
+          <p class="font-medium text-sm">{{ user.profile?.phoneNumber || 'Not provided' }}</p>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Date of Birth</label>
+          <p class="font-medium text-sm">{{ (user.profile?.dob | date:'mediumDate') || 'Not provided' }}</p>
+        </div>
+        <div class="md:col-span-2">
+          <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Address</label>
+          <p class="font-medium text-sm">{{ user.profile?.address || 'Not provided' }}</p>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">City & State</label>
+          <p class="font-medium text-sm" *ngIf="user.profile?.city || user.profile?.state">{{ user.profile?.city }}{{ user.profile?.city && user.profile?.state ? ', ' : '' }}{{ user.profile?.state }}</p>
+          <p class="font-medium text-[10px] text-muted-foreground" *ngIf="!user.profile?.city && !user.profile?.state">Not provided</p>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Country</label>
+          <p class="font-medium text-sm">{{ user.profile?.country || 'Not provided' }}</p>
+        </div>
+        <div class="md:col-span-2 mt-2">
+          <label class="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Bio</label>
+          <p class="font-medium text-sm whitespace-pre-wrap">{{ user.profile?.bio || 'No bio available.' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-pad bg-surface flex justify-end gap-3 border-t border-border">
+      <button class="btn-ol btn-sm text-red-500 border-red-200 hover:bg-red-50" (click)="deleteUser()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3.5 h-3.5 mr-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        Delete Account
+      </button>
+    </div>
+  </div>
+</div>

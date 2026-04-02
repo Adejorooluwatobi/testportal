@@ -1,0 +1,164 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <span>Content Management</span>
+    <span class="breadcrumb-sep">/</span>
+    <span>Programs</span>
+  </div>
+  <h2>Programs Editor</h2>
+  <p>Manage the list of programs and social initiatives offered by the NGO.</p>
+</div>
+
+<div class="view-hero" *ngIf="!isLoading">
+  <div class="view-hdr">
+    <div>
+      <h3 class="card-title">{{ editingSection ? 'Editing ' + (editingSection | titlecase) : 'Current Programs' }}</h3>
+      <p class="card-sub">{{ editingSection ? 'Update the section below.' : 'Manage the hero section and the program cards.' }}</p>
+    </div>
+    <div class="view-actions" *ngIf="editingSection">
+      <button class="btn-ol" (click)="toggleEditSection(null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 mr-1">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        Back to Overview
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="skeleton-wrap">
+  <div class="card skeleton h-48"></div>
+</div>
+
+<div *ngIf="!isLoading && !programData && !isEditMode" class="card empty-state p-12 text-center">
+  <div class="empty-icon mb-4">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 48px; height: 48px; opacity: 0.3;">
+       <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    </svg>
+  </div>
+  <h3>No Programs Content Yet</h3>
+  <p class="text-muted">Click an "Edit" button on any section to start adding program details.</p>
+</div>
+
+<form [formGroup]="programForm" *ngIf="!isLoading && (programData || isEditMode)">
+  <div class="card mb-6" formGroupName="banner" *ngIf="!editingSection || editingSection === 'banner'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+          Program Hero Section
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('banner')">Edit Hero</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'banner'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'banner'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label class="fl">Header</label>
+          <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'banner'">
+        </div>
+        <div class="fg">
+          <label class="fl">Title</label>
+          <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'banner'">
+        </div>
+        <div class="fg full">
+          <label class="fl">Description</label>
+          <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'banner'"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="!editingSection || editingSection === 'cards'">
+    <div class="card-pad">
+      <div class="flex justify-between items-center mb-4">
+        <div class="section-title mb-0 flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          Individual Programs
+        </div>
+        <div class="flex gap-2">
+          <button class="btn-ol btn-sm" *ngIf="editingSection === 'cards'" (click)="addCard()">+ Add Program</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('cards')">Edit Programs</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'cards'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'cards'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" formArrayName="card">
+        <div *ngFor="let card of programCards.controls; let i=index" [formGroupName]="i" class="ii relative p-5 bg-surface1 rounded-lg border border-border">
+          <button class="absolute top-3 right-3 text-red-500" *ngIf="editingSection === 'cards'" (click)="removeCard(i)">×</button>
+          
+          <div class="form-grid">
+             <div class="fg">
+               <label class="fl text-[10px] uppercase opacity-60">Category / Header</label>
+               <input type="text" class="fi text-xs" formControlName="header" [readonly]="editingSection !== 'cards'" placeholder="e.g. EDUCATION">
+             </div>
+             <div class="fg">
+               <label class="fl text-xs">Title</label>
+               <input type="text" class="fi text-sm font-bold" formControlName="title" [readonly]="editingSection !== 'cards'">
+             </div>
+             <div class="fg">
+               <label class="fl text-xs text-muted-foreground">Image</label>
+               <div class="flex items-center gap-2 mt-1">
+                 <div class="h-8 w-8 bg-surface2 rounded flex items-center justify-center border overflow-hidden">
+                   <img [src]="card.get('icon')?.value" *ngIf="card.get('icon')?.value" class="max-h-full max-w-full">
+                 </div>
+                 <div *ngIf="editingSection === 'cards'">
+                   <input type="file" #programIconInput style="display: none" (change)="onFileSelected($event, 'card.' + i + '.icon')" accept="image/*">
+                   <button type="button" class="btn-ol btn-xs" (click)="programIconInput.click()">Up</button>
+                 </div>
+               </div>
+             </div>
+             <div class="fg full">
+               <label class="fl text-xs">Description</label>
+               <textarea class="fta text-sm h-16 min-h-0" formControlName="description" [readonly]="editingSection !== 'cards'"></textarea>
+             </div>
+             <div class="fg">
+               <label class="fl text-[10px] uppercase opacity-60">Success Progress ({{ card.get('progress')?.value }}%)</label>
+               <input type="range" class="w-full h-2 accent-[var(--accent)] cursor-pointer mt-2" formControlName="progress" min="0" max="100" *ngIf="editingSection === 'cards'">
+               <div class="progress-bar-wrap mt-2 bg-surface hidden" [ngClass]="{'!block': editingSection !== 'cards'}">
+                 <div class="progress-bar h-2" [style.width.%]="card.get('progress')?.value"></div>
+               </div>
+             </div>
+             <div class="fg">
+               <label class="fl text-[10px] uppercase opacity-60">Impact / Reaching</label>
+               <input type="text" class="fi text-xs" formControlName="reaching" [readonly]="editingSection !== 'cards'" placeholder="e.g. 500+ People">
+             </div>
+             <div class="fg full">
+               <label class="fl text-xs">Feature Image Gallery</label>
+               <div class="flex flex-wrap gap-3 mt-2">
+                 <!-- Existing Images -->
+                 <div *ngFor="let imgUrl of getCardImages(i).controls; let j=index" class="relative group">
+                   <div class="h-16 w-24 bg-surface2 rounded border overflow-hidden">
+                     <img [src]="imgUrl.value" class="object-cover h-full w-full">
+                   </div>
+                   <button type="button" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity" 
+                     *ngIf="editingSection === 'cards'" (click)="removeCardImage(i, j)">×</button>
+                 </div>
+                 
+                 <!-- Upload Button -->
+                 <div *ngIf="editingSection === 'cards'">
+                   <input type="file" #programImgInput style="display: none" (change)="onGalleryFileSelected($event, i)" accept="image/*" multiple>
+                   <button type="button" class="h-16 w-16 border-2 border-dashed border-border rounded flex flex-col items-center justify-center text-muted-foreground hover:border-accent hover:text-accent transition-colors" 
+                     (click)="programImgInput.click()">
+                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
+                     <span class="text-[8px] mt-1 font-bold">ADD IMAGE</span>
+                   </button>
+                 </div>
+               </div>
+               <p class="text-[10px] text-muted-foreground mt-2" *ngIf="getCardImages(i).length === 0">No images uploaded yet.</p>
+             </div>
+             <div class="fg">
+               <label class="fl text-xs">Button Text</label>
+               <input type="text" class="fi text-sm" formControlName="buttonText" [readonly]="editingSection !== 'cards'">
+             </div>
+             <div class="fg">
+               <label class="fl text-xs">Button Link</label>
+               <input type="text" class="fi text-sm" formControlName="buttonLink" [readonly]="editingSection !== 'cards'">
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

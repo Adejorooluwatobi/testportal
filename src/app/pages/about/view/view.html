@@ -1,0 +1,320 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <span>Content Management</span>
+    <span class="breadcrumb-sep">/</span>
+    <span>About Us</span>
+  </div>
+  <h2>About Us Page</h2>
+  <p>Manage the information displayed on the About Us section of the website.</p>
+</div>
+
+<div class="view-hero" *ngIf="!isLoading">
+  <div class="view-hdr">
+    <div>
+      <h3 class="card-title">{{ editingSection ? 'Editing ' + (editingSection | titlecase) : 'Current Page Content' }}</h3>
+      <p class="card-sub">{{ editingSection ? 'Modify the section below to update the website.' : 'This is what is currently live on your website.' }}</p>
+    </div>
+    <div class="view-actions" *ngIf="editingSection">
+      <button class="btn-ol" (click)="toggleEditSection(null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 mr-1">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        Back to Overview
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="skeleton-wrap">
+  <div class="card skeleton" style="height: 200px; margin-bottom: 20px;"></div>
+  <div class="card skeleton" style="height: 400px;"></div>
+</div>
+
+<div *ngIf="!isLoading && !about && !isEditMode" class="card empty-state p-12 text-center">
+  <div class="empty-icon mb-4">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 48px; height: 48px; opacity: 0.3;">
+       <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+    </svg>
+  </div>
+  <h3>No About Content Yet</h3>
+  <p class="text-muted">Click an "Edit" button on any section to start telling your organization's story.</p>
+</div>
+
+<form [formGroup]="aboutForm" *ngIf="!isLoading && (about || isEditMode)">
+  <!-- BANNER SECTION -->
+  <div class="card mb-6" *ngIf="!editingSection || editingSection === 'banner'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+          Hero Banner
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('banner')">Edit Banner</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'banner'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'banner'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid" formGroupName="banner">
+        <div class="fg">
+          <label class="fl">Header Tag</label>
+          <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'banner'">
+        </div>
+        <div class="fg">
+          <label class="fl">Main Title</label>
+          <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'banner'">
+        </div>
+        <div class="fg full">
+          <label class="fl">Description</label>
+          <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'banner'"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISSION SECTION -->
+  <div class="card mb-6" *ngIf="!editingSection || editingSection === 'mission'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+          Our Mission
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('mission')">Edit Mission</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'mission'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'mission'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div formGroupName="ourMission">
+        <div class="form-grid">
+          <div class="fg">
+            <label class="fl">Section Header</label>
+            <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'mission'">
+          </div>
+          <div class="fg">
+            <label class="fl">Section Title</label>
+            <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'mission'">
+          </div>
+          <div class="fg full">
+            <label class="fl">Overall Description</label>
+            <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'mission'"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <div class="flex justify-between items-center mb-4">
+            <label class="fl">Mission Cards</label>
+            <button class="btn-ol btn-sm" *ngIf="editingSection === 'mission'" (click)="addMissionCard()">+ Add Card</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" formArrayName="cards">
+            <div *ngFor="let card of missionCards.controls; let i=index" [formGroupName]="i" class="ii relative">
+              <button class="absolute top-2 right-2 text-red-500" *ngIf="editingSection === 'mission'" (click)="removeMissionCard(i)">×</button>
+              <div class="fg mb-2">
+                <label class="fl text-xs text-muted-foreground">Icon</label>
+                <div class="flex items-center gap-2 mt-1">
+                  <div class="h-10 w-10 bg-surface2 rounded flex items-center justify-center border overflow-hidden">
+                    <img [src]="card.get('icon')?.value" *ngIf="card.get('icon')?.value" class="max-h-full max-w-full">
+                    <span *ngIf="!card.get('icon')?.value" class="text-[10px] opacity-30">None</span>
+                  </div>
+                  <div *ngIf="editingSection === 'mission'">
+                    <input type="file" #missionIconInput style="display: none" (change)="onFileSelected($event, 'ourMission.cards.' + i + '.icon')" accept="image/*">
+                    <button type="button" class="btn-ol btn-xs" (click)="missionIconInput.click()">Upload</button>
+                  </div>
+                </div>
+              </div>
+              <div class="fg mb-2">
+                <label class="fl text-xs text-muted-foreground">Card Title</label>
+                <input type="text" class="fi text-sm" formControlName="title" [readonly]="editingSection !== 'mission'">
+              </div>
+              <div class="fg">
+                <label class="fl text-xs text-muted-foreground">Card Description</label>
+                <textarea class="fta text-sm h-20 min-h-0" formControlName="description" [readonly]="editingSection !== 'mission'"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISION SECTION -->
+  <div class="card mb-6" *ngIf="!editingSection || editingSection === 'vision'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          Our Vision
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('vision')">Edit Vision</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'vision'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'vision'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid" formGroupName="ourVision">
+        <div class="fg">
+          <label class="fl">Icon</label>
+          <div class="flex items-center gap-2 mt-1">
+            <div class="h-12 w-12 bg-surface2 rounded flex items-center justify-center border overflow-hidden">
+              <img [src]="aboutForm.get('ourVision.icon')?.value" *ngIf="aboutForm.get('ourVision.icon')?.value" class="max-h-full max-w-full">
+              <span *ngIf="!aboutForm.get('ourVision.icon')?.value" class="text-xs opacity-30">None</span>
+            </div>
+            <div *ngIf="editingSection === 'vision'">
+              <input type="file" #visionIconInput style="display: none" (change)="onFileSelected($event, 'ourVision.icon')" accept="image/*">
+              <button type="button" class="btn-ol btn-sm" (click)="visionIconInput.click()">Upload Icon</button>
+            </div>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="fl">Title</label>
+          <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'vision'">
+        </div>
+        <div class="fg full">
+          <label class="fl">Description</label>
+          <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'vision'"></textarea>
+        </div>
+        <div class="fg full">
+          <label class="fl">Progress Value ({{ aboutForm.get('ourVision.progress')?.value }}%)</label>
+          <input type="range" class="w-full h-2 accent-[var(--accent)] cursor-pointer mt-3" formControlName="progress" min="0" max="100" *ngIf="editingSection === 'vision'">
+          <div class="progress-bar-wrap mt-3 bg-surface hidden" [ngClass]="{'!block': editingSection !== 'vision'}">
+            <div class="progress-bar h-2" [style.width.%]="aboutForm.get('ourVision.progress')?.value"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEAM SECTION -->
+  <div class="card mb-6" *ngIf="!editingSection || editingSection === 'team'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Management Team
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('team')">Edit Team</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'team'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'team'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div formGroupName="team">
+        <div class="form-grid">
+          <div class="fg">
+            <label class="fl">Section Header</label>
+            <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'team'">
+          </div>
+          <div class="fg">
+            <label class="fl">Section Title</label>
+            <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'team'">
+          </div>
+          <div class="fg full">
+            <label class="fl">Overall Team Description</label>
+            <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'team'"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <div class="flex justify-between items-center mb-4">
+            <label class="fl">Team Members</label>
+            <button class="btn-ol btn-sm" *ngIf="editingSection === 'team'" (click)="addTeamCard()">+ Add Member</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" formArrayName="card">
+            <div *ngFor="let member of teamCards.controls; let i=index" [formGroupName]="i" class="ii relative">
+              <button class="absolute top-2 right-2 text-red-500" *ngIf="editingSection === 'team'" (click)="removeTeamCard(i)">×</button>
+              <div class="fg mb-2">
+                <label class="fl text-xs">Name</label>
+                <input type="text" class="fi text-sm" formControlName="name" [readonly]="editingSection !== 'team'">
+              </div>
+              <div class="fg mb-2">
+                <label class="fl text-xs">Role</label>
+                <input type="text" class="fi text-sm" formControlName="role" [readonly]="editingSection !== 'team'">
+              </div>
+              <div class="fg">
+                <label class="fl text-xs">Profile Image</label>
+                <div class="flex items-center gap-2 mt-1">
+                  <div class="h-14 w-14 bg-surface2 rounded flex items-center justify-center border overflow-hidden">
+                    <img [src]="member.get('image')?.value" *ngIf="member.get('image')?.value" class="max-h-full max-w-full">
+                    <span *ngIf="!member.get('image')?.value" class="text-xs opacity-30">No Image</span>
+                  </div>
+                  <div *ngIf="editingSection === 'team'">
+                    <input type="file" #teamImgInput style="display: none" (change)="onFileSelected($event, 'team.card.' + i + '.image')" accept="image/*">
+                    <button type="button" class="btn-ol btn-xs" (click)="teamImgInput.click()">Upload Photo</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="fg mt-4 p-3 bg-surface2 rounded border">
+                <div class="flex justify-between items-center mb-2">
+                  <label class="fl text-[10px] font-bold text-accent uppercase tracking-wider mb-0">Social Links</label>
+                  <button type="button" class="btn-ol btn-xs" *ngIf="editingSection === 'team'" (click)="addTeamSocial(i)">+ Add</button>
+                </div>
+                <div class="space-y-2 max-h-40 overflow-y-auto pr-1" formArrayName="socials">
+                  <div *ngFor="let social of getTeamSocials(i).controls; let j=index" [formGroupName]="j" class="flex gap-2 items-center bg-surface p-2 rounded border relative group">
+                    <button type="button" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] shadow opacity-0 group-hover:opacity-100 transition-opacity z-10" 
+                      *ngIf="editingSection === 'team'" (click)="removeTeamSocial(i, j)">×</button>
+                    
+                    <div class="flex-shrink-0 cursor-pointer relative w-8 h-8 rounded bg-surface2 border flex flex-col items-center justify-center hover:border-accent transition-colors overflow-hidden"
+                         (click)="editingSection === 'team' ? socIconInput.click() : null">
+                      <img [src]="social.get('icon')?.value" *ngIf="social.get('icon')?.value" class="max-h-full max-w-full h-full object-cover">
+                      <span *ngIf="!social.get('icon')?.value" class="text-[8px] uppercase tracking-tighter opacity-50 font-bold">ICON</span>
+                      <input type="file" #socIconInput style="display: none" (change)="onFileSelected($event, 'team.card.' + i + '.socials.' + j + '.icon')" accept="image/*">
+                    </div>
+                    
+                    <div class="flex-grow">
+                      <input type="text" class="fi !p-1 !text-[10px] !h-8 w-full placeholder:text-[9px]" placeholder="Link (e.g. fb.com/xyz)" formControlName="link" [readonly]="editingSection !== 'team'">
+                    </div>
+                  </div>
+                  <div *ngIf="getTeamSocials(i).controls.length === 0" class="text-[10px] text-muted-foreground italic text-center py-2 opacity-60">
+                    No social links added.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOURNEY SECTION -->
+  <div class="card mb-6" *ngIf="!editingSection || editingSection === 'journey'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Our Journey Timeline
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('journey')">Edit Timeline</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'journey'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'journey'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="flex justify-between items-center mb-4">
+        <label class="fl">Timeline Events</label>
+        <button class="btn-ol btn-sm" *ngIf="editingSection === 'journey'" (click)="addJourneyItem()">+ Add Event</button>
+      </div>
+      <div class="space-y-4" formArrayName="ourJourney">
+        <div *ngFor="let item of journeyItems.controls; let i=index" [formGroupName]="i" class="ii relative">
+          <button class="absolute top-2 right-2 text-red-500" *ngIf="editingSection === 'journey'" (click)="removeJourneyItem(i)">×</button>
+          <div class="form-grid">
+            <div class="fg">
+              <label class="fl">Year</label>
+              <input type="text" class="fi" formControlName="year" [readonly]="editingSection !== 'journey'">
+            </div>
+            <div class="fg">
+              <label class="fl">Event Title</label>
+              <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'journey'">
+            </div>
+            <div class="fg full">
+              <label class="fl">Event Description</label>
+              <textarea class="fta h-20 min-h-0" formControlName="description" [readonly]="editingSection !== 'journey'"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

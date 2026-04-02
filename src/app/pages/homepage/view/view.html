@@ -1,0 +1,428 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <span>Content Management</span>
+    <span class="breadcrumb-sep">/</span>
+    <span>Homepage</span>
+  </div>
+  <h2>Homepage Editor</h2>
+  <p>Manage all sections of the landing page, including banners, missions, and testimonials.</p>
+</div>
+
+<div class="view-hero" *ngIf="!isLoading">
+  <div class="view-hdr">
+    <div>
+      <h3 class="card-title">{{ editingSection ? 'Editing ' + (editingSection | titlecase) : 'Current Homepage Content' }}</h3>
+      <p class="card-sub">Use the sections below to customize the landing page experience.</p>
+    </div>
+    <div class="view-actions" *ngIf="editingSection">
+      <button class="btn-ol" (click)="toggleEditSection(null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 mr-1">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        Back to Overview
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="skeleton-wrap">
+  <div class="card skeleton h-32 mb-4"></div>
+  <div class="card skeleton h-64 mb-4"></div>
+  <div class="card skeleton h-64"></div>
+</div>
+
+<div *ngIf="!isLoading && !homeData && !isEditMode" class="card empty-state p-12 text-center">
+  <div class="empty-icon mb-4">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 48px; height: 48px; opacity: 0.3;">
+       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  </div>
+  <h3>No Homepage Content Yet</h3>
+  <p class="text-muted">Click an "Edit" button on any section to start building your homepage.</p>
+</div>
+
+<form [formGroup]="homeForm" *ngIf="!isLoading && (homeData || isEditMode)" class="pb-10">
+  <!-- BANNER -->
+  <div class="card mb-6" formGroupName="banner" *ngIf="!editingSection || editingSection === 'banner'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+          Hero Banner
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('banner')">Edit Banner</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'banner'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'banner'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label class="fl">Header Tag</label>
+          <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'banner'" placeholder="e.g. WELCOME">
+        </div>
+        <div class="fg">
+          <label class="fl">Title</label>
+          <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'banner'">
+        </div>
+        <div class="fg full">
+          <label class="fl">Description</label>
+          <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'banner'"></textarea>
+        </div>
+        <div class="fg full">
+          <label class="fl">Banner Image</label>
+          <div class="flex items-center gap-4 mt-2">
+            <div class="image-preview w-32 h-20 bg-surface2 rounded flex items-center justify-center overflow-hidden border">
+              <img [src]="homeForm.get('banner.imageUrl')?.value" *ngIf="homeForm.get('banner.imageUrl')?.value" class="max-h-full max-w-full">
+              <span *ngIf="!homeForm.get('banner.imageUrl')?.value" class="text-xs opacity-30">No Image</span>
+            </div>
+            <div *ngIf="editingSection === 'banner'">
+              <input type="file" #bannerInput style="display: none" (change)="onFileSelected($event, 'banner.imageUrl')" accept="image/*">
+              <button type="button" class="btn-ol btn-sm" (click)="bannerInput.click()">Change Image</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <label class="fl text-accent mb-4 block">Stats / Banner Summary</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" formArrayName="bannerSummary">
+          <div *ngFor="let s of bannerSummary.controls; let i=index" [formGroupName]="i" class="ii relative p-3">
+            <button class="absolute top-2 right-2 text-red-500" *ngIf="editingSection === 'banner'" (click)="bannerSummary.removeAt(i)">×</button>
+            <div class="grid grid-cols-1 gap-2">
+              <input type="text" class="fi text-xs" placeholder="Count (e.g. 500+)" formControlName="count" [readonly]="editingSection !== 'banner'">
+              <input type="text" class="fi text-xs" placeholder="Label (e.g. Projects)" formControlName="label" [readonly]="editingSection !== 'banner'">
+            </div>
+          </div>
+          <button type="button" class="btn-ol btn-sm h-full flex flex-col items-center justify-center opacity-50 hover:opacity-100 border-dashed" *ngIf="editingSection === 'banner'" (click)="addSummary()">
+            <span>+ Add Stat</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <div class="flex justify-between items-center mb-4">
+          <label class="fl text-accent">Call to Action Buttons</label>
+          <button class="btn-ol btn-sm" *ngIf="editingSection === 'banner'" (click)="addButton(bannerButtons)">+ Add Button</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" formArrayName="buttons">
+          <div *ngFor="let b of bannerButtons.controls; let i=index" [formGroupName]="i" class="ii relative p-3">
+            <button class="absolute top-2 right-2 text-red-500" *ngIf="editingSection === 'banner'" (click)="bannerButtons.removeAt(i)">×</button>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" class="fi text-xs" placeholder="Label" formControlName="label" [readonly]="editingSection !== 'banner'">
+              <input type="text" class="fi text-xs" placeholder="Link" formControlName="link" [readonly]="editingSection !== 'banner'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT WE DO -->
+  <div class="card mb-6" formGroupName="whatWeDo" *ngIf="!editingSection || editingSection === 'what we do'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+          What We Do Section
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('what we do')">Edit Section</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'what we do'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'what we do'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label class="fl">Header Tag</label>
+          <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'what we do'" placeholder="e.g. WHAT WE DO">
+        </div>
+        <div class="fg">
+          <label class="fl">Title</label>
+          <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'what we do'">
+        </div>
+        <div class="fg full">
+          <label class="fl">Description</label>
+          <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'what we do'"></textarea>
+        </div>
+      </div>
+      <div class="mt-8">
+        <div class="flex justify-between items-center mb-6">
+          <label class="fl text-accent font-bold">Feature Items (Detailed Programs Mode)</label>
+          <button class="btn-ol btn-sm" *ngIf="editingSection === 'what we do'" (click)="addWhatWeDoItem()">+ Add Feature Program</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8" formArrayName="items">
+          <div *ngFor="let item of whatWeDoItems.controls; let i=index" [formGroupName]="i" class="ii relative p-6 bg-surface1 rounded-xl border border-border shadow-sm">
+            <button class="absolute top-4 right-4 text-red-500 hover:text-red-700 font-bold text-xl" *ngIf="editingSection === 'what we do'" (click)="whatWeDoItems.removeAt(i)">×</button>
+            
+            <div class="form-grid">
+               <div class="fg">
+                 <label class="fl text-[10px] uppercase font-bold text-muted-foreground">Category / Header</label>
+                 <input type="text" class="fi text-xs bg-surface2" formControlName="header" [readonly]="editingSection !== 'what we do'" placeholder="e.g. EDUCATION">
+               </div>
+               <div class="fg">
+                 <label class="fl text-xs font-bold">Title</label>
+                 <input type="text" class="fi text-sm font-bold bg-surface2" formControlName="title" [readonly]="editingSection !== 'what we do'">
+               </div>
+               <div class="fg">
+                 <label class="fl text-xs text-muted-foreground">Icon (Action SVG/Img)</label>
+                 <div class="flex items-center gap-2 mt-1">
+                   <div class="h-10 w-10 bg-surface rounded-lg flex items-center justify-center border shadow-inner overflow-hidden">
+                     <img [src]="item.get('icon')?.value" *ngIf="item.get('icon')?.value" class="max-h-full max-w-full p-1">
+                     <span *ngIf="!item.get('icon')?.value" class="text-[8px] opacity-30">ICON</span>
+                   </div>
+                   <div *ngIf="editingSection === 'what we do'">
+                     <input type="file" #wwdIconInput style="display: none" (change)="onFileSelected($event, 'whatWeDo.items.' + i + '.icon')" accept="image/*">
+                     <button type="button" class="btn-ol btn-xs" (click)="wwdIconInput.click()">Update</button>
+                   </div>
+                 </div>
+               </div>
+               <div class="fg full">
+                 <label class="fl text-xs font-bold">Program Description</label>
+                 <textarea class="fta text-sm h-20 min-h-0 bg-surface2" formControlName="description" [readonly]="editingSection !== 'what we do'"></textarea>
+               </div>
+               <div class="fg">
+                 <label class="fl text-[10px] uppercase font-bold text-accent">Success Progress ({{ item.get('progress')?.value }}%)</label>
+                 <input type="range" class="w-full h-2 accent-[var(--accent)] cursor-pointer mt-3" formControlName="progress" min="0" max="100" *ngIf="editingSection === 'what we do'">
+                 <div class="progress-bar-wrap mt-3 bg-surface hidden" [ngClass]="{'!block': editingSection !== 'what we do'}">
+                   <div class="progress-bar h-2" [style.width.%]="item.get('progress')?.value"></div>
+                 </div>
+               </div>
+               <div class="fg">
+                 <label class="fl text-[10px] uppercase font-bold text-muted-foreground">Metric / Reaching</label>
+                 <input type="text" class="fi text-xs bg-surface2" formControlName="reaching" [readonly]="editingSection !== 'what we do'" placeholder="e.g. 1.2k People Reached">
+               </div>
+               <div class="fg full">
+                 <label class="fl text-xs font-bold">Feature Image Gallery</label>
+                 <div class="flex flex-wrap gap-4 mt-2">
+                   <!-- Existing Images -->
+                   <div *ngFor="let imgUrl of getWhatWeDoImages(i).controls; let j=index" class="relative group">
+                     <div class="h-20 w-32 bg-surface rounded-lg flex items-center justify-center border shadow-inner overflow-hidden">
+                       <img [src]="imgUrl.value" class="w-full h-full object-cover">
+                     </div>
+                     <button type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-lg opacity-0 group-hover:opacity-100 transition-opacity" 
+                       *ngIf="editingSection === 'what we do'" (click)="removeWhatWeDoImage(i, j)">×</button>
+                   </div>
+                   
+                   <!-- Upload Button -->
+                   <div *ngIf="editingSection === 'what we do'">
+                     <input type="file" #wwdImgInput style="display: none" (change)="onGalleryFileSelected($event, i)" accept="image/*" multiple>
+                     <button type="button" class="h-20 w-20 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center text-muted-foreground hover:border-accent hover:text-accent transition-all bg-surface2 hover:bg-surface" 
+                       (click)="wwdImgInput.click()">
+                       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
+                       <span class="text-[8px] mt-1 font-bold uppercase tracking-wider">ADD IMAGE</span>
+                     </button>
+                   </div>
+                 </div>
+                 <p class="text-[10px] text-muted-foreground mt-2" *ngIf="getWhatWeDoImages(i).length === 0">No feature images uploaded yet.</p>
+               </div>
+               <div class="fg">
+                 <label class="fl text-[10px] uppercase font-bold">Button CTA Label</label>
+                 <input type="text" class="fi text-xs bg-surface2" formControlName="buttonText" [readonly]="editingSection !== 'what we do'" placeholder="e.g. Learn More">
+               </div>
+               <div class="fg">
+                 <label class="fl text-[10px] uppercase font-bold">Link (Slug/URL)</label>
+                 <input type="text" class="fi text-xs bg-surface2" formControlName="buttonLink" [readonly]="editingSection !== 'what we do'" placeholder="e.g. /programs/education">
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="card mb-6" formGroupName="testimonials" *ngIf="!editingSection || editingSection === 'testimonials'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          Testimonials
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('testimonials')">Edit Testimonials</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'testimonials'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'testimonials'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label class="fl">Header Tag</label>
+          <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'testimonials'" placeholder="e.g. TESTIMONIALS">
+        </div>
+        <div class="fg">
+          <label class="fl">Title</label>
+          <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'testimonials'">
+        </div>
+        <div class="fg full">
+          <label class="fl">Description</label>
+          <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'testimonials'"></textarea>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="flex justify-between items-center mb-4">
+          <label class="fl text-accent">Feedback List</label>
+          <button class="btn-ol btn-sm" *ngIf="editingSection === 'testimonials'" (click)="addTestimonial()">+ Add Testimonial</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" formArrayName="items">
+          <div *ngFor="let t of testimonialItems.controls; let i=index" [formGroupName]="i" class="ii relative p-4">
+            <button class="absolute top-2 right-2 text-red-500" *ngIf="editingSection === 'testimonials'" (click)="testimonialItems.removeAt(i)">×</button>
+            <div class="flex gap-4 mb-3">
+              <div class="h-12 w-12 bg-surface2 rounded-full flex items-center justify-center border overflow-hidden shrink-0">
+                <img [src]="t.get('image')?.value" *ngIf="t.get('image')?.value" class="h-full w-full object-cover">
+                <svg *ngIf="!t.get('image')?.value" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="w-6 h-6 opacity-20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+              <div class="flex-grow">
+                <div *ngIf="editingSection === 'testimonials'" class="mb-2">
+                  <input type="file" #testiImgInput style="display: none" (change)="onFileSelected($event, 'testimonials.items.' + i + '.image')" accept="image/*">
+                  <button type="button" class="btn-ol btn-xs" (click)="testiImgInput.click()">Upload Photo</button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="text" class="fi text-xs" placeholder="Author" formControlName="author" [readonly]="editingSection !== 'testimonials'">
+                  <input type="text" class="fi text-xs" placeholder="Role" formControlName="role" [readonly]="editingSection !== 'testimonials'">
+                </div>
+              </div>
+            </div>
+            <textarea class="fta text-xs h-20" placeholder="Testimonial text" formControlName="text" [readonly]="editingSection !== 'testimonials'"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTE SECTION -->
+  <div class="card mb-6" formGroupName="quote" *ngIf="!editingSection || editingSection === 'quote'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path></svg>
+          Quote / Call to Action
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('quote')">Edit Quote</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'quote'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'quote'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label class="fl">Header Tag</label>
+          <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'quote'" placeholder="e.g. OUR IMPACT">
+        </div>
+        <div class="fg">
+          <label class="fl">Author</label>
+          <input type="text" class="fi" formControlName="author" [readonly]="editingSection !== 'quote'">
+        </div>
+        <div class="fg full">
+          <label class="fl">Quote Text</label>
+          <textarea class="fta" formControlName="text" [readonly]="editingSection !== 'quote'"></textarea>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <div class="flex justify-between items-center mb-4">
+          <label class="fl text-accent font-medium">Impact Cards</label>
+          <button class="btn-ol btn-sm" *ngIf="editingSection === 'quote'" (click)="addQuoteCard()">+ Add Card</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" formArrayName="cards">
+          <div *ngFor="let card of quoteCards.controls; let i=index" [formGroupName]="i" class="ii relative p-4">
+            <button class="absolute top-2 right-2 text-red-500" *ngIf="editingSection === 'quote'" (click)="quoteCards.removeAt(i)">×</button>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="h-10 w-10 bg-surface2 rounded flex items-center justify-center border overflow-hidden shrink-0">
+                <img [src]="card.get('icon')?.value" *ngIf="card.get('icon')?.value" class="max-h-full max-w-full">
+                <svg *ngIf="!card.get('icon')?.value" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="w-5 h-5 opacity-20"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+              </div>
+              <div *ngIf="editingSection === 'quote'">
+                <input type="file" #quoteIconInput style="display: none" (change)="onFileSelected($event, 'quote.cards.' + i + '.icon')" accept="image/*">
+                <button type="button" class="btn-ol btn-xs" (click)="quoteIconInput.click()">Up</button>
+              </div>
+              <input type="text" class="fi text-xs font-bold flex-grow" placeholder="Value (e.g. 10k)" formControlName="value" [readonly]="editingSection !== 'quote'">
+            </div>
+            <input type="text" class="fi text-xs mb-1" placeholder="Title" formControlName="title" [readonly]="editingSection !== 'quote'">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DONATE SECTION -->
+  <div class="card mb-6" formGroupName="donate" *ngIf="!editingSection || editingSection === 'donate'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          Donate Section
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('donate')">Edit Donate</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'donate'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'donate'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label class="fl">Header Tag</label>
+          <input type="text" class="fi" formControlName="header" [readonly]="editingSection !== 'donate'" placeholder="e.g. SUPPORT US">
+        </div>
+        <div class="fg">
+          <label class="fl">Title</label>
+          <input type="text" class="fi" formControlName="title" [readonly]="editingSection !== 'donate'">
+        </div>
+        <div class="fg full">
+          <label class="fl">Description</label>
+          <textarea class="fta" formControlName="description" [readonly]="editingSection !== 'donate'"></textarea>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="flex justify-between items-center mb-3">
+          <label class="fl text-accent">Donate Buttons</label>
+          <button class="btn-ol btn-sm" *ngIf="editingSection === 'donate'" (click)="addButton(donateButtons)">+ Add Button</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" formArrayName="buttons">
+          <div *ngFor="let b of donateButtons.controls; let i=index" [formGroupName]="i" class="ii relative p-3">
+            <button class="absolute top-2 right-2 text-red-500" *ngIf="editingSection === 'donate'" (click)="donateButtons.removeAt(i)">×</button>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" class="fi text-xs" placeholder="Label" formControlName="label" [readonly]="editingSection !== 'donate'">
+              <input type="text" class="fi text-xs" placeholder="Link" formControlName="link" [readonly]="editingSection !== 'donate'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTNERS -->
+  <div class="card mb-6" *ngIf="!editingSection || editingSection === 'partners'">
+    <div class="card-pad">
+      <div class="section-title flex justify-between items-center w-full">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+          Our Partners
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ol btn-sm" *ngIf="!editingSection" (click)="toggleEditSection('partners')">Edit Partners</button>
+          <button type="button" class="btn-ol btn-sm" *ngIf="editingSection === 'partners'" (click)="toggleEditSection(null)">Cancel</button>
+          <button type="button" class="btn-primary btn-sm" *ngIf="editingSection === 'partners'" (click)="onSubmit()">Save Changes</button>
+        </div>
+      </div>
+      <div class="flex justify-between items-center mb-4">
+        <label class="fl">Partner Logos</label>
+        <button class="btn-ol btn-sm" *ngIf="editingSection === 'partners'" (click)="addPartner()">+ Add Partner</button>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" formArrayName="partners">
+        <div *ngFor="let p of partners.controls; let i=index" [formGroupName]="i" class="ii relative p-2 text-center">
+          <button class="absolute top-1 right-1 text-red-500" *ngIf="editingSection === 'partners'" (click)="partners.removeAt(i)">×</button>
+          <div class="h-12 w-12 bg-surface2 rounded mx-auto mb-2 flex items-center justify-center overflow-hidden">
+             <img [src]="p.get('logo')?.value" *ngIf="p.get('logo')?.value" class="max-h-full max-w-full">
+             <svg *ngIf="!p.get('logo')?.value" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="w-6 h-6 opacity-20"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          </div>
+          <input type="text" class="fi text-xs-small p-1 h-auto" placeholder="Name" formControlName="name" [readonly]="editingSection !== 'partners'">
+          <div *ngIf="editingSection === 'partners'" class="mt-1">
+            <input type="file" #partnerLogoInput style="display: none" (change)="onFileSelected($event, 'partners.' + i + '.logo')" accept="image/*">
+            <button type="button" class="btn-ol btn-xs" (click)="partnerLogoInput.click()">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

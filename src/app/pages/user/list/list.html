@@ -1,0 +1,60 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <span>Management</span>
+    <span class="breadcrumb-sep">/</span>
+    <span>Registered Users</span>
+  </div>
+  <h2>User Management</h2>
+  <p>View and manage community members and portal users.</p>
+</div>
+
+<div class="card overflow-hidden">
+  <div class="card-pad border-b border-border flex justify-between items-center">
+    <div>
+      <h3 class="card-title">All Users</h3>
+      <p class="card-sub">Total: {{ users.length }} community members</p>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn-ol btn-sm" (click)="fetchUsers()">Refresh List</button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email Address</th>
+          <th>Joined Date</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>
+            <div class="flex items-center">
+              <div class="avatar-sm mr-3">{{ user.username?.[0] || 'U' }}</div>
+              <span class="font-medium">{{ user.username }}</span>
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td class="text-muted text-xs">{{ user.createdAt | date:'mediumDate' }}</td>
+          <td class="text-right">
+            <div class="flex justify-end gap-2">
+              <a [routerLink]="['/user/view', user.id || user._id]" class="btn-icon" title="View Profile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </a>
+              <button class="btn-icon text-red-500" (click)="deleteUser((user.id || user._id)!)" title="Delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="users.length === 0 && !isLoading">
+          <td colspan="4" class="text-center py-10 text-muted">No community members found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

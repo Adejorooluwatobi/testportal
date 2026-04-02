@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings — AWEDI</title>
+    <script>tailwind={config:{corePlugins:{preflight:false}}}</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div id="page-app" class="page active">
+        <div id="sb-overlay" onclick="closeMob()"></div>
+        <nav id="sidebar"></nav>
+        <div id="main">
+            <header id="header"></header>
+            <div id="content">
+                <div class="subpage active" id="sub-settings">
+                    <div class="page-header"><div class="breadcrumb"><span>Admin</span><span class="breadcrumb-sep">›</span><span>Settings</span></div><h2>Settings</h2><p>Manage your portal preferences and organization configuration.</p></div>
+            
+                    <!-- Theme row highlight in settings -->
+                    <div class="card card-pad" style="margin-bottom:18px;border-color:var(--accent3);">
+                      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                        <div>
+                          <div style="font-family:'Lora',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;">🌙 Appearance</div>
+                          <div style="font-size:13px;color:var(--muted);">Switch between light and dark mode for the entire portal.</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                          <span style="font-size:13px;color:var(--muted);" id="theme-label">Light Mode</span>
+                          <button class="theme-btn" onclick="toggleTheme()" style="width:52px;height:28px;border-radius:20px;position:relative;border:1.5px solid var(--border);background:var(--surface2);" title="Toggle theme">
+                            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:17px;height:17px;position:absolute;transition:opacity .3s,transform .3s;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:17px;height:17px;position:absolute;transition:opacity .3s,transform .3s;opacity:0;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+            
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;" id="settings-grid">
+                      <div>
+                        <div class="card card-pad settings-section">
+                          <div class="card-title" style="margin-bottom:16px;">Notification Preferences</div>
+                          <div class="setting-row"><div class="setting-info"><h4>New Donation Alerts</h4><p>Get notified when a new donation is received</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                          <div class="setting-row"><div class="setting-info"><h4>Program Milestone Alerts</h4><p>Alerts when programs hit key milestones</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                          <div class="setting-row"><div class="setting-info"><h4>Budget Threshold Warnings</h4><p>Warning when a program spends 80%+ of budget</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                          <div class="setting-row"><div class="setting-info"><h4>New Volunteer Applications</h4><p>Alert when volunteers apply to join</p></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+                          <div class="setting-row"><div class="setting-info"><h4>Weekly Summary Email</h4><p>Receive a weekly digest every Monday</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="card card-pad settings-section">
+                          <div class="card-title" style="margin-bottom:16px;">Security</div>
+                          <div class="setting-row"><div class="setting-info"><h4>Two-Factor Authentication</h4><p>Require 2FA for all admin logins</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                          <div class="setting-row"><div class="setting-info"><h4>Login Activity Log</h4><p>Keep a detailed login audit trail</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                          <div class="setting-row"><div class="setting-info"><h4>Session Timeout (30 min)</h4><p>Auto-logout after inactivity</p></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="card card-pad settings-section">
+                          <div class="card-title" style="margin-bottom:16px;">Organization Profile</div>
+                          <div class="form-grid" style="grid-template-columns:1fr;">
+                            <div class="fg"><label class="fl">Organization Name</label><input class="fi" type="text" value="AWEDI NGO"/></div>
+                            <div class="fg"><label class="fl">Registration Number</label><input class="fi" type="text" value="CAC/IT/2019/00842"/></div>
+                            <div class="fg"><label class="fl">Primary Contact Email</label><input class="fi" type="email" value="info@hopeforward.org"/></div>
+                            <div class="fg"><label class="fl">Headquarters</label><input class="fi" type="text" value="14 Blantyre Street, Wuse 2, Abuja"/></div>
+                            <div class="fg"><label class="fl">Fiscal Year End</label><select class="fs"><option selected>December 31</option><option>March 31</option><option>June 30</option></select></div>
+                          </div>
+                          <div class="form-footer" style="margin-top:14px;"><button class="btn-primary" onclick="toast('success','Changes Saved','Organization profile updated successfully.','✅')">Save Changes</button></div>
+                        </div>
+                        <div class="card card-pad settings-section">
+                          <div class="card-title" style="margin-bottom:16px;">Data & Privacy</div>
+                          <div class="setting-row"><div class="setting-info"><h4>Beneficiary Data Encryption</h4><p>All PII stored with AES-256 encryption</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                          <div class="setting-row"><div class="setting-info"><h4>Export Audit Logging</h4><p>Log all data export actions</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                          <div style="padding:14px 0;"><button class="btn-danger" onclick="toast('warn','GDPR Export','Data export request submitted. You\'ll receive a download link.','🔐')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Export All Data (GDPR)</button></div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('componentsLoaded', () => { fixGrids(); });
+    </script>
+</body>
+</html>

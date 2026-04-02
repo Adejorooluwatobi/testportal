@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beneficiaries — AWEDI</title>
+    <script>tailwind={config:{corePlugins:{preflight:false}}}</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div id="page-app" class="page active">
+        <div id="sb-overlay" onclick="closeMob()"></div>
+        <nav id="sidebar"></nav>
+        <div id="main">
+            <header id="header"></header>
+            <div id="content">
+                <div class="subpage active" id="sub-beneficiaries">
+                    <div class="page-header"><div class="breadcrumb"><span>Admin</span><span class="breadcrumb-sep">›</span><span>Beneficiaries</span></div><h2>Beneficiaries</h2><p>Track and manage all program beneficiaries across regions.</p></div>
+                    <div class="toolbar">
+                      <div class="srch-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="srch-inp" type="text" placeholder="Search beneficiaries…"/></div>
+                      <button class="btn-ol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><line x1="4" y1="6" x2="20" y2="6"/></svg>Filter</button>
+                      <button class="btn-ol" onclick="toast('info','Exporting...','Beneficiary list exported to CSV.','📥')">Export CSV</button>
+                      <button class="btn-primary" onclick="toast('success','Form Ready','Add beneficiary form is now open.','👤')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#fff;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Beneficiary</button>
+                    </div>
+                    <div class="card" style="padding:0;overflow:hidden;">
+                      <div class="tbl-wrap">
+                        <table>
+                          <thead><tr><th>Name</th><th>Age</th><th>Program</th><th>Location</th><th>Enrolled</th><th>Status</th><th>Actions</th></tr></thead>
+                          <tbody>
+                            <tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="t-av">FB</div><div><div style="font-weight:600;">Fatima Bello</div><div style="font-size:11px;color:var(--muted);">ID: BNF-001</div></div></div></td><td style="color:var(--muted);">12</td><td>Child Literacy Drive</td><td style="color:var(--muted);font-size:13px;">Lagos Island</td><td style="color:var(--muted);font-size:12px;">Mar 22, 2025</td><td><span class="pill pill-active">Active</span></td><td><button class="btn-ol" style="padding:4px 10px;font-size:12px;">View</button></td></tr>
+                            <tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="t-av" style="background:var(--info);">KM</div><div><div style="font-weight:600;">Khalid Musa</div><div style="font-size:11px;color:var(--muted);">ID: BNF-002</div></div></div></td><td style="color:var(--muted);">8</td><td>Child Literacy Drive</td><td style="color:var(--muted);font-size:13px;">Abuja</td><td style="color:var(--muted);font-size:12px;">Mar 18, 2025</td><td><span class="pill pill-active">Active</span></td><td><button class="btn-ol" style="padding:4px 10px;font-size:12px;">View</button></td></tr>
+                            <tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="t-av" style="background:var(--warn);">AO</div><div><div style="font-weight:600;">Adaeze Obi</div><div style="font-size:11px;color:var(--muted);">ID: BNF-003</div></div></div></td><td style="color:var(--muted);">34</td><td>Women Empowerment</td><td style="color:var(--muted);font-size:13px;">Enugu</td><td style="color:var(--muted);font-size:12px;">Feb 10, 2025</td><td><span class="pill pill-pending">Follow-up</span></td><td><button class="btn-ol" style="padding:4px 10px;font-size:12px;">View</button></td></tr>
+                            <tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="t-av" style="background:#7c3aed;">YA</div><div><div style="font-weight:600;">Yusuf Ahmed</div><div style="font-size:11px;color:var(--muted);">ID: BNF-004</div></div></div></td><td style="color:var(--muted);">19</td><td>Youth Skills Training</td><td style="color:var(--muted);font-size:13px;">Kano</td><td style="color:var(--muted);font-size:12px;">Jan 28, 2025</td><td><span class="pill pill-active">Active</span></td><td><button class="btn-ol" style="padding:4px 10px;font-size:12px;">View</button></td></tr>
+                            <tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="t-av" style="background:#0891b2;">NE</div><div><div style="font-weight:600;">Ngozi Eze</div><div style="font-size:11px;color:var(--muted);">ID: BNF-005</div></div></div></td><td style="color:var(--muted);">45</td><td>Rural Health Outreach</td><td style="color:var(--muted);font-size:13px;">Cross River</td><td style="color:var(--muted);font-size:12px;">Jan 15, 2025</td><td><span class="pill pill-closed">Completed</span></td><td><button class="btn-ol" style="padding:4px 10px;font-size:12px;">View</button></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;font-size:13px;color:var(--muted);flex-wrap:wrap;gap:9px;">
+                      <span>Showing 1–10 of 124 beneficiaries</span>
+                      <div style="display:flex;gap:6px;">
+                        <button class="btn-ol" style="padding:6px 11px;font-size:12px;">← Prev</button>
+                        <button class="btn-ol" style="padding:6px 11px;font-size:12px;border-color:var(--accent);color:var(--accent);">1</button>
+                        <button class="btn-ol" style="padding:6px 11px;font-size:12px;">2</button>
+                        <button class="btn-ol" style="padding:6px 11px;font-size:12px;">Next →</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        document.addEventListener('componentsLoaded', () => { fixGrids(); });
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Consultations</span>
+  </div>
+  <h2>Consultation Requests</h2>
+  <p>Manage and review incoming consultation requests and messages.</p>
+</div>
+
+<div class="card">
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Sender</th>
+          <th>Subject</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of consultations" [routerLink]="['/consultation/view', item.id || item._id]">
+          <td>
+            <div class="flex items-center gap-3">
+              <div class="t-av">{{ item.firstname?.[0] }}{{ item.lastname?.[0] }}</div>
+              <div>
+                <div class="font-bold text-sm">{{ item.firstname }} {{ item.lastname }}</div>
+                <div class="text-xs text-muted">{{ item.email }}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="text-sm font-medium">{{ item.subject }}</div>
+            <div class="text-xs text-muted truncate max-w-[200px]">{{ item.message }}</div>
+          </td>
+          <td class="text-xs text-muted">
+            {{ item.createdAt | date:'mediumDate' }}
+          </td>
+          <td>
+            <span class="pill" [class.pill-active]="!item.isRead" [class.pill-closed]="item.isRead">
+              {{ item.isRead ? 'Read' : 'New' }}
+            </span>
+          </td>
+          <td class="text-right" (click)="$event.stopPropagation()">
+            <div class="flex justify-end gap-2">
+              <a [routerLink]="['/consultation/view', item.id || item._id]" class="btn-ol btn-xs">View</a>
+              <button (click)="deleteConsultation((item.id || item._id)!)" class="btn-ol btn-xs text-danger border-danger/20">Delete</button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="consultations.length === 0 && !isLoading">
+          <td colspan="5" class="p-12 text-center">
+            <div class="empty-state py-8">
+              <div class="text-muted">No consultation requests found.</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="p-12 text-center">
+  <div class="text-muted">Loading consultations...</div>
+</div>

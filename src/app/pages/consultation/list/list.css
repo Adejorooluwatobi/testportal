@@ -1,0 +1,14 @@
+/* Use global table and card styles */
+tbody tr {
+  cursor: pointer;
+}
+
+.pill-active {
+  background: rgba(45, 106, 79, 0.1);
+  color: var(--accent);
+}
+
+.pill-closed {
+  background: var(--surface2);
+  color: var(--muted);
+}

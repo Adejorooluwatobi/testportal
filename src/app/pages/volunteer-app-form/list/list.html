@@ -1,0 +1,74 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Volunteer Applications</span>
+  </div>
+  <div class="flex justify-between items-center">
+    <h2>Volunteer Applications</h2>
+    <button class="btn-ol btn-sm" (click)="fetchApplications()">Refresh</button>
+  </div>
+  <p>Review and manage all incoming volunteer applications.</p>
+</div>
+
+<div class="card">
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Applicant</th>
+          <th>Contact Info</th>
+          <th>Expertise</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of applications" [routerLink]="['/volunteer-app-form/view', item.id || item._id]">
+          <td>
+            <div class="flex items-center gap-3">
+              <div class="t-av">{{ item.firstname?.[0] }}{{ item.lastname?.[0] }}</div>
+              <div>
+                <div class="font-bold text-sm">{{ item.firstname }} {{ item.lastname }}</div>
+                <div class="text-xs text-muted">{{ item.stateOfResidence }}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="text-sm font-medium">{{ item.email }}</div>
+            <div class="text-xs text-muted">{{ item.phonenumber }}</div>
+          </td>
+          <td>
+            <span class="pill pill-active">{{ item.areaOfExpertise }}</span>
+          </td>
+          <td class="text-xs text-muted">
+            {{ item.createdAt | date:'mediumDate' }}
+          </td>
+          <td>
+            <span class="pill" [class.pill-active]="!item.isRead" [class.pill-closed]="item.isRead">
+              {{ item.isRead ? 'Read' : 'New' }}
+            </span>
+          </td>
+          <td class="text-right" (click)="$event.stopPropagation()">
+            <div class="flex justify-end gap-2">
+              <a [routerLink]="['/volunteer-app-form/view', item.id || item._id]" class="btn-ol btn-xs">View</a>
+              <button (click)="deleteApplication((item.id || item._id)!)" class="btn-ol btn-xs text-danger border-danger/20">Delete</button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="applications.length === 0 && !isLoading">
+          <td colspan="6" class="p-12 text-center">
+            <div class="empty-state py-8">
+              <div class="text-muted">No volunteer applications found.</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="p-12 text-center">
+  <div class="text-muted">Loading applications...</div>
+</div>

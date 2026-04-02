@@ -1,0 +1,89 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a>
+    <span class="breadcrumb-sep">/</span>
+    <a routerLink="/volunteer-app-form/list">Volunteer Applications</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Candidate Profile</span>
+  </div>
+  <div class="flex justify-between items-center">
+    <h2>Candidate Profile</h2>
+    <div class="flex gap-2">
+      <button (click)="deleteApp()" class="btn-ol text-danger border-danger/20">Delete</button>
+      <a routerLink="/volunteer-app-form/list" class="btn-ol">Back to List</a>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="p-12 text-center card">
+  <div class="text-muted">Loading candidate details...</div>
+</div>
+
+<div *ngIf="app && !isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <!-- Applicant Info -->
+  <div class="card md:col-span-1">
+    <div class="card-pad border-bottom">
+      <div class="flex items-center gap-4">
+        <div class="prof-av-lg">{{ app.firstname?.[0] }}{{ app.lastname?.[0] }}</div>
+        <div>
+          <h3 class="card-title text-lg">{{ app.firstname }} {{ app.lastname }}</h3>
+          <p class="text-sm text-muted">Volunteer Applicant</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-pad space-y-4">
+      <div class="ii">
+        <div class="il">Email Address</div>
+        <div class="iv">{{ app.email }}</div>
+      </div>
+      <div class="ii">
+        <div class="il">Phone Number</div>
+        <div class="iv">{{ app.phonenumber }}</div>
+      </div>
+      <div class="ii">
+        <div class="il">Location</div>
+        <div class="iv">{{ app.stateOfResidence || 'Not Specified' }}</div>
+      </div>
+      <div class="ii">
+        <div class="il">Submitted On</div>
+        <div class="iv">{{ app.createdAt | date:'medium' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Content -->
+  <div class="card md:col-span-2">
+    <div class="card-pad border-bottom flex justify-between items-center">
+      <h3 class="card-title">Interests & Availability</h3>
+      <span class="pill pill-closed">Read</span>
+    </div>
+    <div class="card-pad grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="ii">
+        <div class="il">Area of Expertise</div>
+        <div class="iv"><span class="pill pill-active">{{ app.areaOfExpertise }}</span></div>
+      </div>
+      <div class="ii">
+        <div class="il">Availability</div>
+        <div class="iv">{{ app.availability }}</div>
+      </div>
+      <div class="ii md:col-span-2">
+        <div class="il">Preferred Program</div>
+        <div class="iv">{{ app.preferredProgram }}</div>
+      </div>
+    </div>
+    
+    <div class="card-pad border-top">
+      <div class="il mb-2">Why do you want to volunteer?</div>
+      <div class="bg-surface2 p-6 rounded-xl text-text leading-relaxed whitespace-pre-wrap border min-h-[120px] italic">
+        "{{ app.whatYouVolunteer || 'No message provided.' }}"
+      </div>
+    </div>
+
+    <div class="card-pad border-top flex justify-end">
+        <a [href]="'mailto:' + app.email" class="btn-primary">
+            <svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            Contact Candidate
+        </a>
+    </div>
+  </div>
+</div>
