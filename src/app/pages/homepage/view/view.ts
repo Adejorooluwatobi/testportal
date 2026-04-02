@@ -18,6 +18,8 @@ export class HomePageComponent implements OnInit {
   isEditMode = false;
   editingSection: string | null = null;
   isLoading = true;
+  isSaving = false;
+  uploadingPaths = new Set<string>();
   homeData: HomePage | null = null;
 
   constructor(
@@ -188,18 +190,21 @@ export class HomePageComponent implements OnInit {
       if (this.homeData) this.patchForm(this.homeData);
     }
   }
+  isUploading(path: string) { return this.uploadingPaths.has(path); }
+
   onFileSelected(event: any, controlPath: string) {
     const file = event.target.files[0];
     if (file) {
-      this.isLoading = true;
+      this.uploadingPaths.add(controlPath);
+      this.cdr.detectChanges();
       this.uploadService.uploadFile(file).subscribe({
         next: (url) => {
           this.homeForm.get(controlPath)?.setValue(url);
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
           alert('Upload failed: ' + err.message);
         }
@@ -210,16 +215,18 @@ export class HomePageComponent implements OnInit {
   onGalleryFileSelected(event: any, itemIndex: number) {
     const files: FileList = event.target.files;
     if (files.length > 0) {
-      this.isLoading = true;
+      const galleryKey = `gallery_home_${itemIndex}`;
+      this.uploadingPaths.add(galleryKey);
+      this.cdr.detectChanges();
       this.uploadService.uploadMultipleFiles(files).subscribe({
         next: (urls: string[]) => {
           const imagesArr = this.getWhatWeDoImages(itemIndex);
           urls.forEach(url => imagesArr.push(this.fb.control(url)));
-          this.isLoading = false;
+          this.uploadingPaths.delete(galleryKey);
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.isLoading = false;
+          this.uploadingPaths.delete(galleryKey);
           this.cdr.detectChanges();
           alert('One or more uploads failed: ' + err.message);
         }
@@ -229,20 +236,23 @@ export class HomePageComponent implements OnInit {
 
   onSubmit() {
     if (this.homeForm.valid) {
-      this.isLoading = true;
-      this.homeService.create(this.homeForm.value).subscribe({
+      const snapshot = this.homeForm.value;
+      this.homeData = { ...this.homeData, ...snapshot };
+      this.isEditMode = false;
+      this.editingSection = null;
+      this.isSaving = true;
+      this.cdr.detectChanges();
+
+      this.homeService.create(snapshot).subscribe({
         next: (data) => {
           this.homeData = data;
-          this.isEditMode = false;
-          this.editingSection = null;
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('Homepage updated successfully!');
         },
         error: (err) => {
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('Error updating homepage: ' + (err.error?.message || err.message));
+          alert('Save failed — changes may not have been persisted: ' + (err.error?.message || err.message));
         }
       });
     }

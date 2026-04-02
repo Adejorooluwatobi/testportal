@@ -17,6 +17,8 @@ export class AboutComponent implements OnInit {
   isEditMode = false;
   editingSection: string | null = null;
   isLoading = true;
+  isSaving = false;
+  uploadingPaths = new Set<string>(); // tracks per-field upload spinner
   about: About | null = null;
 
   constructor(
@@ -191,18 +193,21 @@ export class AboutComponent implements OnInit {
     }
   }
 
+  isUploading(path: string) { return this.uploadingPaths.has(path); }
+
   onFileSelected(event: any, controlPath: string) {
     const file = event.target.files[0];
     if (file) {
-      this.isLoading = true;
+      this.uploadingPaths.add(controlPath);
+      this.cdr.detectChanges();
       this.uploadService.uploadFile(file).subscribe({
         next: (url) => {
           this.aboutForm.get(controlPath)?.setValue(url);
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
           alert('Upload failed: ' + err.message);
         }
@@ -212,20 +217,24 @@ export class AboutComponent implements OnInit {
 
   onSubmit() {
     if (this.aboutForm.valid) {
-      this.isLoading = true;
-      this.aboutService.create(this.aboutForm.value).subscribe({
+      // Optimistic: exit edit mode immediately, save silently in background
+      const snapshot = this.aboutForm.value;
+      this.about = { ...this.about, ...snapshot };
+      this.isEditMode = false;
+      this.editingSection = null;
+      this.isSaving = true;
+      this.cdr.detectChanges();
+
+      this.aboutService.create(snapshot).subscribe({
         next: (data) => {
           this.about = data;
-          this.isEditMode = false;
-          this.editingSection = null;
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('About page updated successfully!');
         },
         error: (err) => {
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('Error updating About page: ' + err.message);
+          alert('Save failed — changes may not have been persisted: ' + err.message);
         }
       });
     }

@@ -17,6 +17,8 @@ export class VolunteerComponent implements OnInit {
   isEditMode = false;
   editingSection: string | null = null;
   isLoading = true;
+  isSaving = false;
+  uploadingPaths = new Set<string>();
   volunteerData: Volunteer | null = null;
 
   constructor(
@@ -102,18 +104,21 @@ export class VolunteerComponent implements OnInit {
     }
   }
 
+  isUploading(path: string) { return this.uploadingPaths.has(path); }
+
   onFileSelected(event: any, controlPath: string) {
     const file = event.target.files[0];
     if (file) {
-      this.isLoading = true;
+      this.uploadingPaths.add(controlPath);
+      this.cdr.detectChanges();
       this.uploadService.uploadFile(file).subscribe({
         next: (url) => {
           this.volunteerForm.get(controlPath)?.setValue(url);
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
           alert('Upload failed: ' + err.message);
         }
@@ -123,20 +128,23 @@ export class VolunteerComponent implements OnInit {
 
   onSubmit() {
     if (this.volunteerForm.valid) {
-      this.isLoading = true;
-      this.volunteerService.create(this.volunteerForm.value).subscribe({
+      const snapshot = this.volunteerForm.value;
+      this.volunteerData = { ...this.volunteerData, ...snapshot };
+      this.isEditMode = false;
+      this.editingSection = null;
+      this.isSaving = true;
+      this.cdr.detectChanges();
+
+      this.volunteerService.create(snapshot).subscribe({
         next: (data) => {
           this.volunteerData = data;
-          this.isEditMode = false;
-          this.editingSection = null;
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('Volunteer page updated successfully!');
         },
         error: (err) => {
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('Error: ' + err.message);
+          alert('Save failed — changes may not have been persisted: ' + err.message);
         }
       });
     }

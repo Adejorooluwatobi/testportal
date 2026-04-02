@@ -17,6 +17,8 @@ export class NewsComponent implements OnInit {
   isEditMode = false;
   editingSection: string | null = null;
   isLoading = true;
+  isSaving = false;
+  uploadingPaths = new Set<string>();
   newsData: News | null = null;
 
   constructor(
@@ -96,18 +98,21 @@ export class NewsComponent implements OnInit {
     }
   }
 
+  isUploading(path: string) { return this.uploadingPaths.has(path); }
+
   onFileSelected(event: any, controlPath: string) {
     const file = event.target.files[0];
     if (file) {
-      this.isLoading = true;
+      this.uploadingPaths.add(controlPath);
+      this.cdr.detectChanges();
       this.uploadService.uploadFile(file).subscribe({
         next: (url) => {
           this.newsForm.get(controlPath)?.setValue(url);
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
           alert('Upload failed: ' + err.message);
         }
@@ -117,20 +122,23 @@ export class NewsComponent implements OnInit {
 
   onSubmit() {
     if (this.newsForm.valid) {
-      this.isLoading = true;
-      this.newsService.create(this.newsForm.value).subscribe({
+      const snapshot = this.newsForm.value;
+      this.newsData = { ...this.newsData, ...snapshot };
+      this.isEditMode = false;
+      this.editingSection = null;
+      this.isSaving = true;
+      this.cdr.detectChanges();
+
+      this.newsService.create(snapshot).subscribe({
         next: (data) => {
           this.newsData = data;
-          this.isEditMode = false;
-          this.editingSection = null;
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('News page updated successfully!');
         },
         error: (err) => {
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('Error: ' + err.message);
+          alert('Save failed — changes may not have been persisted: ' + err.message);
         }
       });
     }

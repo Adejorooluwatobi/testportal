@@ -18,6 +18,8 @@ export class ProgramComponent implements OnInit {
   isEditMode = false;
   editingSection: string | null = null;
   isLoading = true;
+  isSaving = false;
+  uploadingPaths = new Set<string>();
   programData: Program | null = null;
 
   constructor(
@@ -123,18 +125,21 @@ export class ProgramComponent implements OnInit {
     }
   }
 
+  isUploading(path: string) { return this.uploadingPaths.has(path); }
+
   onFileSelected(event: any, controlPath: string) {
     const file = event.target.files[0];
     if (file) {
-      this.isLoading = true;
+      this.uploadingPaths.add(controlPath);
+      this.cdr.detectChanges();
       this.uploadService.uploadFile(file).subscribe({
         next: (url) => {
           this.programForm.get(controlPath)?.setValue(url);
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.isLoading = false;
+          this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
           alert('Upload failed: ' + err.message);
         }
@@ -145,16 +150,18 @@ export class ProgramComponent implements OnInit {
   onGalleryFileSelected(event: any, cardIndex: number) {
     const files: FileList = event.target.files;
     if (files.length > 0) {
-      this.isLoading = true;
+      const galleryKey = `gallery_prog_${cardIndex}`;
+      this.uploadingPaths.add(galleryKey);
+      this.cdr.detectChanges();
       this.uploadService.uploadMultipleFiles(files).subscribe({
         next: (urls: string[]) => {
           const imagesArr = this.getCardImages(cardIndex);
           urls.forEach(url => imagesArr.push(this.fb.control(url)));
-          this.isLoading = false;
+          this.uploadingPaths.delete(galleryKey);
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.isLoading = false;
+          this.uploadingPaths.delete(galleryKey);
           this.cdr.detectChanges();
           alert('One or more uploads failed: ' + err.message);
         }
@@ -164,20 +171,23 @@ export class ProgramComponent implements OnInit {
 
   onSubmit() {
     if (this.programForm.valid) {
-      this.isLoading = true;
-      this.programService.create(this.programForm.value).subscribe({
+      const snapshot = this.programForm.value;
+      this.programData = { ...this.programData, ...snapshot };
+      this.isEditMode = false;
+      this.editingSection = null;
+      this.isSaving = true;
+      this.cdr.detectChanges();
+
+      this.programService.create(snapshot).subscribe({
         next: (data) => {
           this.programData = data;
-          this.isEditMode = false;
-          this.editingSection = null;
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('Program page updated successfully!');
         },
         error: (err) => {
-          this.isLoading = false;
+          this.isSaving = false;
           this.cdr.detectChanges();
-          alert('Error: ' + err.message);
+          alert('Save failed — changes may not have been persisted: ' + err.message);
         }
       });
     }

@@ -8,6 +8,12 @@
   <p>Manage the information displayed on the About Us section of the website.</p>
 </div>
 
+<!-- Non-blocking save toast -->
+<div *ngIf="isSaving" style="position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--accent);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.2);display:flex;align-items:center;gap:8px;">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+  Saving changes...
+</div>
+
 <div class="view-hero" *ngIf="!isLoading">
   <div class="view-hdr">
     <div>
@@ -113,9 +119,12 @@
               <div class="fg mb-2">
                 <label class="fl text-xs text-muted-foreground">Icon</label>
                 <div class="flex items-center gap-2 mt-1">
-                  <div class="h-10 w-10 bg-surface2 rounded flex items-center justify-center border overflow-hidden">
-                    <img [src]="card.get('icon')?.value" *ngIf="card.get('icon')?.value" class="max-h-full max-w-full">
-                    <span *ngIf="!card.get('icon')?.value" class="text-[10px] opacity-30">None</span>
+                  <div class="h-10 w-10 bg-surface2 rounded flex items-center justify-center border overflow-hidden relative">
+                    <img [src]="card.get('icon')?.value" *ngIf="card.get('icon')?.value && !isUploading('ourMission.cards.' + i + '.icon')" class="max-h-full max-w-full">
+                    <span *ngIf="!card.get('icon')?.value && !isUploading('ourMission.cards.' + i + '.icon')" class="text-[10px] opacity-30">None</span>
+                    <div *ngIf="isUploading('ourMission.cards.' + i + '.icon')" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);border-radius:4px">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    </div>
                   </div>
                   <div *ngIf="editingSection === 'mission'">
                     <input type="file" #missionIconInput style="display: none" (change)="onFileSelected($event, 'ourMission.cards.' + i + '.icon')" accept="image/*">
@@ -156,9 +165,12 @@
         <div class="fg">
           <label class="fl">Icon</label>
           <div class="flex items-center gap-2 mt-1">
-            <div class="h-12 w-12 bg-surface2 rounded flex items-center justify-center border overflow-hidden">
-              <img [src]="aboutForm.get('ourVision.icon')?.value" *ngIf="aboutForm.get('ourVision.icon')?.value" class="max-h-full max-w-full">
-              <span *ngIf="!aboutForm.get('ourVision.icon')?.value" class="text-xs opacity-30">None</span>
+            <div class="h-12 w-12 bg-surface2 rounded flex items-center justify-center border overflow-hidden relative">
+              <img [src]="aboutForm.get('ourVision.icon')?.value" *ngIf="aboutForm.get('ourVision.icon')?.value && !isUploading('ourVision.icon')" class="max-h-full max-w-full">
+              <span *ngIf="!aboutForm.get('ourVision.icon')?.value && !isUploading('ourVision.icon')" class="text-xs opacity-30">None</span>
+              <div *ngIf="isUploading('ourVision.icon')" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);border-radius:6px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+              </div>
             </div>
             <div *ngIf="editingSection === 'vision'">
               <input type="file" #visionIconInput style="display: none" (change)="onFileSelected($event, 'ourVision.icon')" accept="image/*">
@@ -234,9 +246,12 @@
               <div class="fg">
                 <label class="fl text-xs">Profile Image</label>
                 <div class="flex items-center gap-2 mt-1">
-                  <div class="h-14 w-14 bg-surface2 rounded flex items-center justify-center border overflow-hidden">
-                    <img [src]="member.get('image')?.value" *ngIf="member.get('image')?.value" class="max-h-full max-w-full">
-                    <span *ngIf="!member.get('image')?.value" class="text-xs opacity-30">No Image</span>
+                  <div class="h-14 w-14 bg-surface2 rounded flex items-center justify-center border overflow-hidden relative">
+                    <img [src]="member.get('image')?.value" *ngIf="member.get('image')?.value && !isUploading('team.card.' + i + '.image')" class="max-h-full max-w-full">
+                    <span *ngIf="!member.get('image')?.value && !isUploading('team.card.' + i + '.image')" class="text-xs opacity-30">No Image</span>
+                    <div *ngIf="isUploading('team.card.' + i + '.image')" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);border-radius:6px">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    </div>
                   </div>
                   <div *ngIf="editingSection === 'team'">
                     <input type="file" #teamImgInput style="display: none" (change)="onFileSelected($event, 'team.card.' + i + '.image')" accept="image/*">
