@@ -40,8 +40,7 @@ export class HomePageComponent implements OnInit {
       whatWeDo: this.fb.group({
         header: [''],
         title: [''],
-        description: [''],
-        items: this.fb.array([])
+        description: ['']
       }),
       testimonials: this.fb.group({
         header: [''],
@@ -68,7 +67,6 @@ export class HomePageComponent implements OnInit {
   // Getters for arrays
   get bannerButtons() { return this.homeForm.get('banner.buttons') as FormArray; }
   get bannerSummary() { return this.homeForm.get('banner.bannerSummary') as FormArray; }
-  get whatWeDoItems() { return this.homeForm.get('whatWeDo.items') as FormArray; }
   get testimonialItems() { return this.homeForm.get('testimonials.items') as FormArray; }
   get quoteCards() { return this.homeForm.get('quote.cards') as FormArray; }
   get donateButtons() { return this.homeForm.get('donate.buttons') as FormArray; }
@@ -110,7 +108,6 @@ export class HomePageComponent implements OnInit {
 
     data.banner?.buttons?.forEach(b => this.addButton(this.bannerButtons, b));
     data.banner?.bannerSummary?.forEach(s => this.addSummary(s));
-    data.whatWeDo?.items?.forEach(i => this.addWhatWeDoItem(i));
     data.testimonials?.items?.forEach(t => this.addTestimonial(t));
     data.quote?.cards?.forEach(c => this.addQuoteCard(c));
     data.donate?.buttons?.forEach(b => this.addButton(this.donateButtons, b));
@@ -118,7 +115,7 @@ export class HomePageComponent implements OnInit {
   }
 
   clearAllArrays() {
-    [this.bannerButtons, this.bannerSummary, this.whatWeDoItems, this.testimonialItems, this.quoteCards, this.donateButtons, this.partners]
+    [this.bannerButtons, this.bannerSummary, this.testimonialItems, this.quoteCards, this.donateButtons, this.partners]
       .forEach(arr => { while (arr.length) arr.removeAt(0); });
   }
 
@@ -129,38 +126,6 @@ export class HomePageComponent implements OnInit {
 
   addSummary(data: any = null) {
     this.bannerSummary.push(this.fb.group({ count: [data?.count || ''], label: [data?.label || ''] }));
-  }
-
-  getWhatWeDoImages(index: number) {
-    return this.whatWeDoItems.at(index).get('images') as FormArray;
-  }
-
-  addWhatWeDoItem(data: any = null) {
-    const itemGroup = this.fb.group({
-      header: [data?.header || ''],
-      title: [data?.title || ''],
-      description: [data?.description || ''],
-      icon: [data?.icon || ''],
-      progress: [data?.progress || 0],
-      reaching: [data?.reaching || ''],
-      images: this.fb.array([]), // Multiple images support
-      buttonText: [data?.buttonText || ''],
-      buttonLink: [data?.buttonLink || '']
-    });
-
-    // Handle legacy 'image' field and new 'images' array
-    const imagesArr = itemGroup.get('images') as FormArray;
-    if (data?.images && Array.isArray(data.images)) {
-      data.images.forEach((url: string) => imagesArr.push(this.fb.control(url)));
-    } else if (data?.image) {
-      imagesArr.push(this.fb.control(data.image));
-    }
-
-    this.whatWeDoItems.push(itemGroup);
-  }
-
-  removeWhatWeDoImage(itemIndex: number, imgIndex: number) {
-    this.getWhatWeDoImages(itemIndex).removeAt(imgIndex);
   }
 
   addTestimonial(data: any = null) {
@@ -207,28 +172,6 @@ export class HomePageComponent implements OnInit {
           this.uploadingPaths.delete(controlPath);
           this.cdr.detectChanges();
           alert('Upload failed: ' + err.message);
-        }
-      });
-    }
-  }
-
-  onGalleryFileSelected(event: any, itemIndex: number) {
-    const files: FileList = event.target.files;
-    if (files.length > 0) {
-      const galleryKey = `gallery_home_${itemIndex}`;
-      this.uploadingPaths.add(galleryKey);
-      this.cdr.detectChanges();
-      this.uploadService.uploadMultipleFiles(files).subscribe({
-        next: (urls: string[]) => {
-          const imagesArr = this.getWhatWeDoImages(itemIndex);
-          urls.forEach(url => imagesArr.push(this.fb.control(url)));
-          this.uploadingPaths.delete(galleryKey);
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          this.uploadingPaths.delete(galleryKey);
-          this.cdr.detectChanges();
-          alert('One or more uploads failed: ' + err.message);
         }
       });
     }

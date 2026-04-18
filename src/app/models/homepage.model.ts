@@ -13,7 +13,6 @@ export class HomePage extends BaseModel {
     header: string;
     title: string;
     description: string;
-    items: any[];
   };
   testimonials?: {
     header: string;
